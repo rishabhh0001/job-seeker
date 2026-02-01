@@ -3,6 +3,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, T
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from django.db.models import Q
 from .models import Job, Application, Category
 from .forms import JobForm, ApplicationForm, JobFilterForm
@@ -79,15 +81,39 @@ class ApplyJobView(LoginRequiredMixin, CreateView):
         form.instance.job = job
         form.instance.applicant = self.request.user
         
-        # Resume Parsing
         if 'resume' in self.request.FILES:
             resume_file = self.request.FILES['resume']
             if resume_file.name.endswith('.pdf'):
                 parsed_text = extract_text_from_pdf(resume_file)
                 form.instance.parsed_text = parsed_text
-                
+        
+        # Save first to get the ID/object
+        response = super().form_valid(form)
+        
+        # Send Email Notifications
+        try:
+            # 1. To Applicant
+            send_mail(
+                subject=f'Application Received: {job.title}',
+                message=f'Hi {self.request.user.username},\n\nWe have received your application for {job.title} at {job.employer.company_name}.\n\nGood luck!',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[self.request.user.email],
+                fail_silently=True,
+            )
+            
+            # 2. To Employer
+            send_mail(
+                subject=f'New Applicant for {job.title}',
+                message=f'Hello {job.employer.username},\n\n{self.request.user.username} has just applied for {job.title}. Check your dashboard to review their resume.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[job.employer.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Email Error: {e}")
+
         messages.success(self.request, "Application submitted successfully!")
-        return super().form_valid(form)
+        return response
 
     def get_success_url(self):
         return reverse_lazy('job_detail', kwargs={'slug': self.kwargs['slug']})

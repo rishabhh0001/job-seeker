@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             this.parentNode.parentNode.appendChild(a);
 
             // Fetch suggestions
-            fetch(`/jobs/api/autocomplete/?term=${val}`)
+            fetch(`/api/autocomplete/?term=${val}`)
                 .then(response => response.json())
                 .then(data => {
                     const items = type === 'title' ? data.titles : data.locations;
