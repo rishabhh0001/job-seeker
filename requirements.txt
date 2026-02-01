@@ -11,6 +11,8 @@ django-allauth==65.14.0
 django-cap==0.3.0
 django-crispy-forms==2.5
 django-filter==25.2
+django-jazzmin==3.0.1
+Faker==40.1.2
 fonttools==4.61.1
 gunicorn==25.0.0
 kiwisolver==1.4.9

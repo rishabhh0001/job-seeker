@@ -155,7 +155,7 @@ class JobApplicationsView(EmployerRequiredMixin, ListView):
     context_object_name = 'applications'
 
     def get_queryset(self):
-        job = get_object_or_404(Job, start_user=self.request.user, slug=self.kwargs['slug'])
+        job = get_object_or_404(Job, employer=self.request.user, slug=self.kwargs['slug'])
         return Application.objects.filter(job=job).order_by('-applied_at')
 
 from django.http import JsonResponse
