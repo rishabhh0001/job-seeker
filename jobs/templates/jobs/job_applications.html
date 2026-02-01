@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Applications - JobPortal{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="mb-4" data-aos="fade-right">
+        <a href="{% url 'employer_dashboard' %}" class="text-decoration-none text-muted small mb-2 d-inline-block">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+        <h2 class="fw-bold">Candidates</h2>
+    </div>
+
+    <div class="row g-3">
+        {% for app in applications %}
+        <div class="col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'50' }}">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center">
+                            <div
+                                class="avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                {{ app.applicant.username|make_list|first|upper }}
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">{{ app.applicant.username }}</h5>
+                                <small class="text-muted">Applied {{ app.applied_at|timesince }} ago</small>
+                            </div>
+                        </div>
+                        <span class="badge badge-soft-primary rounded-pill">{{ app.status }}</span>
+                    </div>
+
+                    <div class="bg-light p-3 rounded mb-3">
+                        <small class="text-muted d-block mb-1">Cover Letter:</small>
+                        <p class="mb-0 small fst-italic text-secondary">"{{ app.cover_letter|truncatechars:100 }}"</p>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ app.resume.url }}" target="_blank"
+                            class="btn btn-sm btn-outline-primary rounded-pill flex-grow-1">
+                            <i class="fas fa-file-pdf me-1"></i> View Resume
+                        </a>
+                        <button class="btn btn-sm btn-outline-success rounded-pill" title="Accept"><i
+                                class="fas fa-check"></i></button>
+                        <button class="btn btn-sm btn-outline-danger rounded-pill" title="Reject"><i
+                                class="fas fa-times"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="text-muted">
+                <p>No applications received for this job yet.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

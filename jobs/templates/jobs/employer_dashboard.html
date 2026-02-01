@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Employer Dashboard - JobPortal{% endblock %}
+
+{% block content %}
+<div class="container py-5 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-down">
+        <div>
+            <h2 class="fw-bold">My <span class="text-primary-gradient">Dashboard</span></h2>
+            <p class="text-muted">Manage your job listings and applications</p>
+        </div>
+        <a href="{% url 'post_job' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="fas fa-plus me-2"></i>Post New Job
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0" data-aos="fade-up">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">Job Title</th>
+                            <th class="py-3">Posted Date</th>
+                            <th class="py-3">Status</th>
+                            <th class="py-3">Applicants</th>
+                            <th class="pe-4 py-3 text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+                            <td class="ps-4">
+                                <h6 class="fw-bold mb-0 text-dark">{{ job.title }}</h6>
+                                <small class="text-muted">{{ job.location }}</small>
+                            </td>
+                            <td class="text-muted">{{ job.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                {% if job.is_active %}
+                                <span class="badge badge-soft-success rounded-pill px-3">Active</span>
+                                {% else %}
+                                <span class="badge bg-light text-muted border rounded-pill px-3">Closed</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-users text-muted me-2"></i>
+                                    <span class="fw-bold">{{ job.applications.count }}</span>
+                                </div>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <a href="{% url 'job_applications' job.slug %}"
+                                    class="btn btn-sm btn-outline-primary rounded-pill me-1" title="View Applicants">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'update_job' job.slug %}" class="btn btn-sm btn-light rounded-pill"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="text-muted">
+                                    <i class="fas fa-folder-open fa-3x mb-3 opacity-25"></i>
+                                    <p>You haven't posted any jobs yet.</p>
+                                    <a href="{% url 'post_job' %}" class="btn btn-sm btn-primary rounded-pill">Post your
+                                        first job</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

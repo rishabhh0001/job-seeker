@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign In - JobPortal{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5"
+    style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+    <div class="container">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0 overflow-hidden" style="border-radius: 20px;">
+                    <div class="row g-0">
+                        <!-- Left Side: Image/Info -->
+                        <div
+                            class="col-lg-6 d-none d-lg-flex bg-primary-gradient align-items-center justify-content-center p-5 text-white">
+                            <div class="text-center">
+                                <i class="fas fa-briefcase fa-4x mb-4 opacity-75"></i>
+                                <h2 class="fw-bold mb-3">Welcome Back!</h2>
+                                <p class="lead mb-4 opacity-75">Login to access your dashboard, manage jobs, or track
+                                    your applications.</p>
+                                <a href="{% url 'account_signup' %}"
+                                    class="btn btn-outline-light rounded-pill px-4">Create an Account</a>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Form -->
+                        <div class="col-lg-6 bg-white p-5">
+                            <div class="text-center mb-4">
+                                <h3 class="fw-bold text-dark">Sign In</h3>
+                                <p class="text-muted small">Enter your credentials to continue</p>
+                            </div>
+
+                            <form class="login" method="POST" action="{% url 'account_login' %}">
+                                {% csrf_token %}
+                                {{ form.media }}
+                                {{ form|crispy }}
+
+                                {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}"
+                                    value="{{ redirect_field_value }}" />
+                                {% endif %}
+
+                                <div class="d-grid mt-4">
+                                    <button class="primaryAction btn btn-primary rounded-pill py-2 fw-bold"
+                                        type="submit">{% trans "Sign In" %}</button>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a class="small text-muted text-decoration-none"
+                                        href="{% url 'account_signup' %}">Don't have an account? Sign Up</a>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <a class="button secondaryAction small text-muted text-decoration-none"
+                                        href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

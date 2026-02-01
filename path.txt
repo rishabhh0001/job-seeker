@@ -1,0 +1,1 @@
+C:\Users\risha\AppData\Local\Programs\Python\Python313\Lib\site-packages\django_cap\__init__.py

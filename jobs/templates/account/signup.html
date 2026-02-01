@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign Up - JobPortal{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5"
+    style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+    <div class="container">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-lg-10">
+                <div class="card shadow-lg border-0 overflow-hidden" style="border-radius: 20px;">
+                    <div class="row g-0">
+                        <!-- Left Side: Image/Info -->
+                        <div
+                            class="col-lg-5 d-none d-lg-flex bg-dark align-items-center justify-content-center p-5 text-white">
+                            <div class="text-center">
+                                <i class="fas fa-rocket fa-4x mb-4 text-warning"></i>
+                                <h2 class="fw-bold mb-3">Join Us Today</h2>
+                                <p class="lead mb-4 opacity-75">Connect with top employers or find the best talent. Your
+                                    journey starts here.</p>
+                                <a href="{% url 'account_login' %}"
+                                    class="btn btn-outline-light rounded-pill px-4">Already have an account?</a>
+                            </div>
+                        </div>
+
+                        <!-- Right Side: Form -->
+                        <div class="col-lg-7 bg-white p-5">
+                            <div class="text-center mb-4">
+                                <h3 class="fw-bold text-dark">Create Account</h3>
+                                <p class="text-muted small">Fill in the details below</p>
+                            </div>
+
+                            <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                                {% csrf_token %}
+                                {{ form.media }}
+                                {{ form|crispy }}
+
+                                {% if redirect_field_value %}
+                                <input type="hidden" name="{{ redirect_field_name }}"
+                                    value="{{ redirect_field_value }}" />
+                                {% endif %}
+
+                                <div class="d-grid mt-4">
+                                    <button class="btn btn-primary rounded-pill py-2 fw-bold" type="submit">{% trans
+                                        "Sign Up" %} &raquo;</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
