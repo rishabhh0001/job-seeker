@@ -1,18 +1,12 @@
 {
-    "builds": [
+    "rewrites": [
         {
-            "src": "job_portal/wsgi.py",
-            "use": "@vercel/python",
-            "config": {
-                "maxLambdaSize": "15mb",
-                "runtime": "python3.9"
-            }
-        }
-    ],
-    "routes": [
+            "source": "/static/(.*)",
+            "destination": "/static/$1"
+        },
         {
-            "src": "/(.*)",
-            "dest": "job_portal/wsgi.py"
+            "source": "/(.*)",
+            "destination": "/api/index.py"
         }
     ]
 }

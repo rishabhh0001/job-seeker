@@ -1,33 +1,27 @@
-# Deploying to Vercel
+# Deploying to Vercel (Modern Zero-Config)
 
-This project is configured for seamless deployment on Vercel.
+This project uses the modern Vercel Zero Config setup with a custom build script.
 
 ## 1. Prerequisites
 - A Vercel Account
-- Optional: A PostgreSQL Database (e.g., Neon, Supabase) if you want persistent data. (The default config uses SQLite which resets on every deployment, suitable only for demos).
+- GitHub Repository with this code pushed.
 
 ## 2. Configuration Files (Already Created)
-- `vercel.json`: Defines the build process and Python runtime.
-- `requirements.txt`: Lists all dependencies including `whitenoise` (static files) and `gunicorn`.
-- `job_portal/settings.py`: Configured to read from environment variables.
+- `vercel.json`: Handles routing to `api/index.py`.
+- `build_files.sh`: Automates dependency installation, migrations, and static file collection.
+- `api/index.py`: The WSGI entry point for Vercel.
 
 ## 3. Deployment Steps
 
-### Method A: Using Vercel CLI (Recommended)
-1. Install Vercel CLI: `npm i -g vercel`
-2. Run command:
-   ```bash
-   vercel
-   ```
-3. Follow the prompts.
+1. **Import Project**: Go to Vercel Dashboard -> Add New Project -> Import from GitHub.
+2. **Configure Project Settings** (Important!):
+   - **Framework Preset**: select "Other" (or Django if available, but manual settings below are key).
+   - **Build Command**: `sh build_files.sh`
+   - **Output Directory**: `staticfiles`
+   - **Install Command**: (Leave Empty / Default)
 
-### Method B: Git Integration
-1. Push this project to GitHub/GitLab.
-2. Import the project in Vercel Dashboard.
-3. Vercel should auto-detect Django.
-
-## 4. Environment Variables
-Go to **Settings > Environment Variables** in your Vercel project and add:
+3. **Environment Variables**:
+   Add these in Settings > Environment Variables:
 
 | Variable | Value | Description |
 |----------|-------|-------------|
@@ -35,10 +29,8 @@ Go to **Settings > Environment Variables** in your Vercel project and add:
 | `SECRET_KEY` | `<your-secret-key>` | Generate a strong random string |
 | `DATABASE_URL` | `postgres://...` | (Optional) Connection string for real DB |
 
-## 5. Build Command
-In Vercel **Project Settings > General > Build & Development Settings**:
-- **Build Command**: `python manage.py collectstatic --noinput && python manage.py migrate`
-- **Output Directory**: `staticfiles` (or leave default if Vercel handles it)
+4. **Deploy**: Click Deploy.
 
-## 6. Static Files
-We use **Whitenoise** to serve static files directly from the application, ensuring CSS/JS works perfectly even on serverless platforms.
+## 4. Troubleshooting
+- If the build fails, check the "Build Logs" in Vercel.
+- ensure `build_files.sh` is executable (usually fine on Vercel Linux environment).
