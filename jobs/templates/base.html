@@ -40,8 +40,25 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Jobs</a>
+                        <ul class="dropdown-menu border-0 shadow-lg">
+                            <li><a class="dropdown-item" href="{% url 'home' %}"><i
+                                        class="fas fa-search me-2 text-primary"></i>Browse All</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <h6 class="dropdown-header">Categories</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'home' %}?category=development">Development</a>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'home' %}?category=design">Design</a></li>
+                            <li><a class="dropdown-item" href="{% url 'home' %}?category=marketing">Marketing</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Find Jobs</a>
+                        <a class="nav-link" href="#">Companies</a>
                     </li>
 
                     {% if user.is_authenticated %}
@@ -169,10 +186,21 @@
 
     <script src="{% static 'js/script.js' %}"></script>
     <script>
+        // AOS Animation Init
         AOS.init({
             duration: 800,
             once: true,
             easing: 'ease-out-cubic'
+        });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function () {
+            const nav = document.querySelector('.glass-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
         });
     </script>
     {% block extra_js %}{% endblock %}
