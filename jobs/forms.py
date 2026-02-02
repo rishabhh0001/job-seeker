@@ -1,12 +1,10 @@
 from django import forms
 from .models import User, Job, Application
 from allauth.account.forms import SignupForm
-from django_cap.forms import CapField
 
 class UserRegistrationForm(SignupForm):
     is_employer = forms.BooleanField(required=False, label="I am an Employer")
     company_name = forms.CharField(max_length=100, required=False, help_text="Required if you are an employer")
-    captcha = CapField()
 
     def save(self, request):
         user = super(UserRegistrationForm, self).save(request)
@@ -29,7 +27,6 @@ class JobForm(forms.ModelForm):
         }
 
 class ApplicationForm(forms.ModelForm):
-    captcha = CapField()
     class Meta:
         model = Application
         fields = ['resume', 'cover_letter']

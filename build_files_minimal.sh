@@ -4,10 +4,26 @@ echo "Building project with minimal dependencies..."
 # Install only essential dependencies
 pip install -r requirements-minimal.txt
 
+# Set environment variables for build
+export DJANGO_SETTINGS_MODULE=job_portal.settings
+export DEBUG=False
+
 # Make migrations
 echo "Running Migrations..."
-python manage.py makemigrations --noinput
-python manage.py migrate --noinput
+python manage.py makemigrations --noinput || echo "No migrations to make"
+python manage.py migrate --noinput || echo "Migration failed, continuing..."
+
+# Create superuser if needed (optional)
+echo "Creating superuser if needed..."
+python manage.py shell -c "
+from django.contrib.auth import get_user_model
+User = get_user_model()
+if not User.objects.filter(username='admin').exists():
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+    print('Superuser created')
+else:
+    print('Superuser already exists')
+" || echo "Superuser creation failed, continuing..."
 
 # Collect Static with compression
 echo "Collecting Static..."

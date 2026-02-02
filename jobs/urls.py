@@ -2,11 +2,12 @@ from django.urls import path
 from .views import (
     HomeView, JobDetailView, ApplyJobView, 
     EmployerDashboardView, PostJobView, UpdateJobView, JobApplicationsView,
-    job_autocomplete
+    job_autocomplete, health_check
 )
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('health/', health_check, name='health_check'),
     path('job/<slug:slug>/', JobDetailView.as_view(), name='job_detail'),
     path('job/<slug:slug>/apply/', ApplyJobView.as_view(), name='apply_job'),
     

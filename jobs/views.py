@@ -159,6 +159,7 @@ class JobApplicationsView(EmployerRequiredMixin, ListView):
         return Application.objects.filter(job=job).order_by('-applied_at')
 
 from django.http import JsonResponse
+from django.db import connection
 
 def job_autocomplete(request):
     term = request.GET.get('term', '')
@@ -173,3 +174,21 @@ def job_autocomplete(request):
         results['locations'] = list(locations)
     
     return JsonResponse(results)
+
+def health_check(request):
+    """Simple health check endpoint for Vercel"""
+    try:
+        # Test database connection
+        cursor = connection.cursor()
+        cursor.execute("SELECT 1")
+        
+        return JsonResponse({
+            'status': 'healthy',
+            'database': 'connected',
+            'message': 'Job Portal is running successfully'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'unhealthy',
+            'error': str(e)
+        }, status=500)

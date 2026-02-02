@@ -16,13 +16,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tj=_1ym4_gmri$z%i0$x4hnf2=s*y4w%o7o!itr-v1#b_#raz8'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tj=_1ym4_gmri$z%i0$x4hnf2=s*y4w%o7o!itr-v1#b_#raz8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Default to True for local development, False if explicitly set to False
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# Default to False for production, True only if explicitly set
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['.vercel.app', '.now.sh', '127.0.0.1', 'localhost', '*']
 
 
 # Application definition
@@ -84,12 +84,23 @@ WSGI_APPLICATION = 'job_portal.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600
-    )
-}
+# Use PostgreSQL in production, SQLite for development
+if os.environ.get('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    # Fallback to SQLite for development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
@@ -152,6 +163,28 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Security
 CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
+
+# Logging configuration for debugging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 # Email Configuration
 if DEBUG:
