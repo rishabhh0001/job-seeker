@@ -1,0 +1,60 @@
+# Development files
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Media files (if large)
+media/
+*.pdf
+*.mp4
+*.avi
+*.mov
+
+# Database
+*.sqlite3
+db.sqlite3
+
+# Static files (will be regenerated)
+staticfiles/
+
+# Documentation
+README.md
+VERCEL_GUIDE.md
+
+# Large dependencies source
+requirements.txt
