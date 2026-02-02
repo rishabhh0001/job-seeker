@@ -1,0 +1,4 @@
+# file: C:\Users\risha\job-seeker\jobs\urls.py
+# hypothesis_version: 6.151.4
+
+['api/autocomplete/', 'apply_job', 'employer/dashboard/', 'employer/post-job/', 'employer_dashboard', 'health/', 'health_check', 'home', 'job/<slug:slug>/', 'job_applications', 'job_autocomplete', 'job_detail', 'post_job', 'update_job']

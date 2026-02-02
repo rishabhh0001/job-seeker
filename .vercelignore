@@ -1,35 +1,85 @@
-# Development files
+# =============================================================================
+# VERCEL DEPLOYMENT OPTIMIZATION - .vercelignore
+# =============================================================================
+# This file excludes unnecessary files from Vercel deployment to minimize
+# package size and improve deployment performance.
+# 
+# IMPORTANT: Only essential files for production runtime are included.
+# Static files are handled separately by the build process.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# DJANGO SPECIFIC OPTIMIZATIONS
+# -----------------------------------------------------------------------------
+# Django migrations are needed, but exclude migration backups
+*/migrations/*.pyc
+*/migrations/__pycache__/
+migrations_backup/
+*.migration_backup
+
+# Django session and cache files
+django_cache/
+sessions/
+.django_cache/
+
+# Django debug toolbar and development tools
+debug_toolbar/
+.debug_toolbar/
+
+# -----------------------------------------------------------------------------
+# PYTHON BYTECODE AND CACHE FILES
+# -----------------------------------------------------------------------------
 *.pyc
-__pycache__/
 *.pyo
 *.pyd
+__pycache__/
 .Python
+*.so
+.mypy_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+.cache/
+.tox/
+*.cover
+*.py,cover
+.hypothesis/
+
+# -----------------------------------------------------------------------------
+# VIRTUAL ENVIRONMENTS AND PACKAGE MANAGERS
+# -----------------------------------------------------------------------------
 env/
 venv/
 .venv/
+ENV/
+env.bak/
+venv.bak/
 pip-log.txt
 pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git/
-.mypy_cache/
-.pytest_cache/
-.hypothesis/
+.pip/
+node_modules/
+.npm/
+.yarn/
+package-lock.json
+yarn.lock
 
-# IDE files
+# -----------------------------------------------------------------------------
+# DEVELOPMENT TOOLS AND IDE FILES
+# -----------------------------------------------------------------------------
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.spyderproject
+.spyproject
+.ropeproject
+.project
+.pydevproject
 
-# OS files
+# -----------------------------------------------------------------------------
+# OPERATING SYSTEM FILES
+# -----------------------------------------------------------------------------
 .DS_Store
 .DS_Store?
 ._*
@@ -37,24 +87,269 @@ coverage.xml
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
 
-# Media files (if large)
-media/
-*.pdf
+# -----------------------------------------------------------------------------
+# VERSION CONTROL AND GIT
+# -----------------------------------------------------------------------------
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# -----------------------------------------------------------------------------
+# DATABASE FILES (SQLite development databases)
+# -----------------------------------------------------------------------------
+*.sqlite3
+*.sqlite
+*.db
+db.sqlite3
+local.db
+
+# -----------------------------------------------------------------------------
+# STATIC FILES (Regenerated during build)
+# -----------------------------------------------------------------------------
+# Note: staticfiles/ is needed for Vercel deployment
+# Exclude source static files, keep collected staticfiles
+jobs/static/
+*/static/
+static/
+static_root/
+.static/
+
+# -----------------------------------------------------------------------------
+# MEDIA FILES (User uploads - handled separately)
+# -----------------------------------------------------------------------------
+# Note: Keep media/ structure but exclude large development files
+media/test_*
+media/sample_*
+media/temp/
+media/*.tmp
+
+# -----------------------------------------------------------------------------
+# DOCUMENTATION AND README FILES
+# -----------------------------------------------------------------------------
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE.md
+HISTORY.md
+AUTHORS.md
+INSTALL.md
+UPGRADE.md
+VERCEL_GUIDE.md
+DEPLOYMENT_CHECKLIST.md
+DEPENDENCY_OPTIMIZATION.md
+BUILD_OPTIMIZATION.md
+TASK_*.md
+*.rst
+docs/
+doc/
+
+# -----------------------------------------------------------------------------
+# DEVELOPMENT REQUIREMENTS AND CONFIG FILES
+# -----------------------------------------------------------------------------
+# Use production requirements only - keep requirements-production.txt
+requirements.txt
+requirements-dev.txt
+requirements-test.txt
+requirements-minimal.txt
+dev-requirements.txt
+test-requirements.txt
+Pipfile
+Pipfile.lock
+poetry.lock
+pyproject.toml
+setup.py
+setup.cfg
+MANIFEST.in
+tox.ini
+.flake8
+.pylintrc
+mypy.ini
+pytest.ini
+.pytest.ini
+
+# -----------------------------------------------------------------------------
+# TEST FILES AND TESTING INFRASTRUCTURE
+# -----------------------------------------------------------------------------
+test_*.py
+*_test.py
+*_tests.py
+tests/
+test/
+testing/
+spec/
+specs/
+.kiro/
+conftest.py
+.testmondata
+.pytest_cache/
+htmlcov/
+.coverage
+coverage.xml
+nosetests.xml
+junit.xml
+
+# -----------------------------------------------------------------------------
+# BUILD ARTIFACTS AND TEMPORARY FILES
+# -----------------------------------------------------------------------------
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+*.manifest
+*.spec
+*.tmp
+*.temp
+.tmp/
+.temp/
+*.log
+*.out
+*.err
+
+# -----------------------------------------------------------------------------
+# DEVELOPMENT ENVIRONMENT FILES
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.development
+.env.test
+.env.example
+.env.sample
+local_settings.py
+dev_settings.py
+test_settings.py
+
+# -----------------------------------------------------------------------------
+# DOCKER AND CONTAINERIZATION
+# -----------------------------------------------------------------------------
+Dockerfile
+Dockerfile.*
+docker-compose.yml
+docker-compose.yaml
+docker-compose.*.yml
+docker-compose.*.yaml
+.dockerignore
+.docker/
+
+# -----------------------------------------------------------------------------
+# CI/CD AND DEPLOYMENT SCRIPTS
+# -----------------------------------------------------------------------------
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+.jenkins/
+Jenkinsfile
+.azure-pipelines.yml
+.buildkite/
+.semaphore/
+deploy.sh
+deployment/
+scripts/deploy*
+
+# -----------------------------------------------------------------------------
+# DEVELOPMENT BUILD SCRIPTS (Keep production build script)
+# -----------------------------------------------------------------------------
+build_files_minimal.sh
+validate_build.py
+test_deployment.py
+test_optimized_dependencies.py
+path.txt
+
+# -----------------------------------------------------------------------------
+# BACKUP AND TEMPORARY FILES
+# -----------------------------------------------------------------------------
+*.bak
+*.backup
+*.old
+*.orig
+*.save
+*~
+.#*
+#*#
+
+# -----------------------------------------------------------------------------
+# LARGE MEDIA FILES (Development samples)
+# -----------------------------------------------------------------------------
 *.mp4
 *.avi
 *.mov
+*.mkv
+*.wmv
+*.flv
+*.webm
+*.m4v
+*.3gp
+*.iso
+*.dmg
+*.zip
+*.tar.gz
+*.rar
+*.7z
 
-# Database
-*.sqlite3
-db.sqlite3
+# -----------------------------------------------------------------------------
+# JUPYTER NOTEBOOKS AND DATA SCIENCE FILES
+# -----------------------------------------------------------------------------
+*.ipynb
+.ipynb_checkpoints/
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
 
-# Static files (will be regenerated)
-staticfiles/
+# -----------------------------------------------------------------------------
+# LOCALIZATION FILES (if not needed in production)
+# -----------------------------------------------------------------------------
+*.po
+*.pot
+*.mo
+locale/*/LC_MESSAGES/*.po
 
-# Documentation
-README.md
-VERCEL_GUIDE.md
+# -----------------------------------------------------------------------------
+# VERCEL SPECIFIC OPTIMIZATIONS
+# -----------------------------------------------------------------------------
+# Vercel build cache and temporary files
+.vercel/
+.now/
+now.json
+.next/
+.nuxt/
 
-# Large dependencies source
-requirements.txt
+# Vercel function build artifacts
+.vercel_build_output/
+.output/
+
+# -----------------------------------------------------------------------------
+# SECURITY AND SENSITIVE FILES
+# -----------------------------------------------------------------------------
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+secrets.json
+.secrets/
+
+# -----------------------------------------------------------------------------
+# PERFORMANCE AND PROFILING
+# -----------------------------------------------------------------------------
+*.prof
+*.profile
+.prof/
+.profile/
+
+# -----------------------------------------------------------------------------
+# EDITOR AND TEMPORARY FILES
+# -----------------------------------------------------------------------------
+*.sublime-project
+*.sublime-workspace
+.vimrc
+.vim/
+.emacs.d/
+.atom/

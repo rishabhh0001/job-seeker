@@ -1,0 +1,4 @@
+# file: C:\Users\risha\job-seeker\jobs\forms.py
+# hypothesis_version: 6.151.4
+
+[100, 'I am an Employer', 'Location', 'Search', 'company_name', 'cover_letter', 'created_at', 'description', 'employer', 'is_active', 'is_employer', 'placeholder', 'resume', 'rows', 'slug', 'updated_at']

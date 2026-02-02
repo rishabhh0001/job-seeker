@@ -1,0 +1,4 @@
+# file: C:\Users\risha\job-seeker\jobs\views.py
+# hypothesis_version: 6.151.4
+
+[500, '-applied_at', '-created_at', '.pdf', 'SELECT 1', 'applications', 'categories', 'category', 'connected', 'current_category', 'current_location', 'current_query', 'database', 'employer_dashboard', 'error', 'has_applied', 'healthy', 'job', 'job_detail', 'jobs', 'jobs/apply_job.html', 'jobs/home.html', 'jobs/job_detail.html', 'jobs/post_job.html', 'location', 'locations', 'message', 'query', 'resume', 'slug', 'status', 'term', 'title', 'titles', 'unhealthy']

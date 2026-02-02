@@ -1,0 +1,4 @@
+# file: C:\Users\risha\job-seeker\jobs\admin.py
+# hypothesis_version: 6.151.4
+
+['category', 'company_name', 'created_at', 'description', 'employer', 'employer__username', 'fields', 'is_active', 'is_employer', 'is_seeker', 'phone', 'slug', 'title']

@@ -1,17 +1,34 @@
 {
+    "version": 2,
+    "builds": [
+        {
+            "src": "build_files.sh",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "staticfiles"
+            }
+        }
+    ],
     "functions": {
         "api/index.py": {
-            "maxDuration": 30
+            "runtime": "python3.9",
+            "maxDuration": 30,
+            "memory": 1024
         }
     },
-    "rewrites": [
+    "routes": [
         {
-            "source": "/static/(.*)",
-            "destination": "/static/$1"
+            "src": "/static/(.*)",
+            "dest": "/staticfiles/$1"
         },
         {
-            "source": "/(.*)",
-            "destination": "/api/index.py"
+            "src": "/media/(.*)",
+            "dest": "/media/$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.py"
         }
-    ]
+    ],
+    "outputDirectory": "staticfiles"
 }

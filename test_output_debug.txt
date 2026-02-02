@@ -1,0 +1,25 @@
+...F
+======================================================================
+FAIL: test_static_files_configuration (__main__.TestBuildProcess.test_static_files_configuration)
+Test static file configuration for production.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\risha\job-seeker\test_build_validation.py", line 77, in test_static_files_configuration
+    self.assertIn(
+    ~~~~~~~~~~~~~^
+        configured_storage,
+        ^^^^^^^^^^^^^^^^^^^
+        valid_storages,
+        ^^^^^^^^^^^^^^^
+        f"STATICFILES_STORAGE should be one of {valid_storages}, got {configured_storage}"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+DEBUG setting is: False
+Current STATICFILES_STORAGE: whitenoise.storage.CompressedStaticFilesStorage
+AssertionError: 'django.contrib.staticfiles.storage.StaticFilesStorage' not found in ['whitenoise.storage.CompressedManifestStaticFilesStorage', 'whitenoise.storage.CompressedStaticFilesStorage'] : STATICFILES_STORAGE should be one of ['whitenoise.storage.CompressedManifestStaticFilesStorage', 'whitenoise.storage.CompressedStaticFilesStorage'], got django.contrib.staticfiles.storage.StaticFilesStorage
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.141s
+
+FAILED (failures=1)
