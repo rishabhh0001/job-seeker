@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from django.db.models import Q
-from .models import Job, Application, Category
+from django.db.models import Q, Count
+from .models import Job, Application, Category, User
 from .forms import JobForm, ApplicationForm, JobFilterForm
 
 # Mixins for Role Access
@@ -15,15 +15,34 @@ class EmployerRequiredMixin(UserPassesTestMixin):
         return self.request.user.is_authenticated and self.request.user.is_employer
 
 class CompanyListView(ListView):
-    model = Job  # Ideally User where is_employer=True, but using Job to get active employers
+    model = User
     template_name = 'jobs/company_list.html'
     context_object_name = 'employers'
-    
+
     def get_queryset(self):
-        # Get unique employers who have posted jobs
-        from .models import User
-        # Return all users who are employers
-        return User.objects.filter(is_employer=True)
+        return (
+            User.objects.filter(is_employer=True)
+            .annotate(
+                open_jobs=Count('jobs', filter=Q(jobs__is_active=True), distinct=True),
+                total_jobs=Count('jobs', distinct=True),
+            )
+            .order_by('company_name', 'username')
+        )
+
+class CompanyDetailView(DetailView):
+    model = User
+    template_name = 'jobs/company_detail.html'
+    context_object_name = 'company'
+
+    def get_queryset(self):
+        return User.objects.filter(is_employer=True).annotate(
+            open_jobs=Count('jobs', filter=Q(jobs__is_active=True), distinct=True)
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['jobs'] = Job.objects.filter(employer=self.object, is_active=True).order_by('-created_at')
+        return context
 
 class SeekerRequiredMixin(UserPassesTestMixin):
     def test_func(self):

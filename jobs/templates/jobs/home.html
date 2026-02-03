@@ -6,16 +6,19 @@
 <!-- Hero Section -->
 <section class="hero-section text-center position-relative" id="hero-animate">
     <!-- Vanta JS canvas will be appended here automatically -->
-    <div class="hero-shape" style="top: -100px; left: -100px;"></div>
+    <div class="hero-shape" style="top: -100px; left: -80px;"></div>
     <div class="hero-shape"
-        style="bottom: -100px; right: -100px; background: radial-gradient(circle, var(--accent) 0%, transparent 70%);">
+        style="bottom: -120px; right: -120px; background: radial-gradient(circle, rgba(246, 164, 37, 0.4) 0%, transparent 70%);">
     </div>
 
     <div class="container position-relative z-1" data-aos="fade-up">
-        <h1 class="display-3 fw-bold mb-4">Find Your <span class="text-primary-gradient">Dream Job</span> Today</h1>
-        <p class="lead text-white-50 mb-5 mx-auto" style="max-width: 600px;">
-            Browse thousands of job openings from top companies and startups. Your next big career move starts here.
-        </p>
+        <div class="hero-content mx-auto">
+            <h1 class="display-4 fw-bold mb-3">Find Your <span class="text-primary-gradient">Next Role</span> With
+                Confidence</h1>
+            <p class="lead text-muted mb-5 mx-auto" style="max-width: 620px;">
+                Discover opportunities from fast-growing teams and enterprise leaders. A clean, Dask-inspired search
+                experience that feels like LinkedIn, without the noise.
+            </p>
 
         <div class="search-box mx-auto p-2 rounded-pill shadow-lg d-flex flex-wrap flex-md-nowrap align-items-center"
             style="max-width: 800px;">
@@ -45,10 +48,12 @@
             </form>
         </div>
 
-        <div class="mt-4 text-white-50 small">
-            Popular: <a href="?query=Designer" class="text-white-50 text-decoration-underline mx-1">Designer</a>
-            <a href="?query=Developer" class="text-white-50 text-decoration-underline mx-1">Developer</a>
-            <a href="?query=Marketing" class="text-white-50 text-decoration-underline mx-1">Marketing</a>
+            <div class="mt-4 text-muted small">
+                Popular:
+                <a href="?query=Designer" class="text-muted text-decoration-underline mx-1">Designer</a>
+                <a href="?query=Developer" class="text-muted text-decoration-underline mx-1">Developer</a>
+                <a href="?query=Marketing" class="text-muted text-decoration-underline mx-1">Marketing</a>
+            </div>
         </div>
     </div>
 </section>
@@ -86,7 +91,7 @@
         <div class="row">
             <div class="col-lg-12">
                 {% for job in jobs %}
-                <div class="card mb-3 job-card js-tilt" data-aos="fade-up">
+                <div class="card mb-3 job-card" data-aos="fade-up">
                     <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center gap-4">
                         <div class="flex-shrink-0">
                             <div class="avatar-lg rounded text-center d-flex align-items-center justify-content-center"
@@ -98,14 +103,21 @@
                             <h5 class="fw-bold mb-1"><a href="{% url 'job_detail' job.slug %}"
                                     class="text-main text-decoration-none stretched-link">{{ job.title }}</a></h5>
                             <div class="text-muted mb-2">
-                                <span class="fw-medium text-main">{{ job.employer.company_name|default:"Confidential"
-                                    }}</span> &bull;
+                                <span class="fw-medium text-main">
+                                    <a href="{% url 'company_detail' job.employer.pk %}"
+                                        class="text-decoration-none text-main">
+                                        {{ job.employer.company_name|default:"Confidential" }}
+                                    </a>
+                                </span> &bull;
                                 <span class="small"><i class="fas fa-map-marker-alt me-1"></i>{{ job.location }}</span>
                             </div>
                             <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-2">
                                 <span class="badge badge-soft-primary">{{ job.get_job_type_display }}</span>
-                                <span class="badge border">{{ job.category.name|default:"General"
-                                    }}</span>
+                                {% if job.category %}
+                                <span class="badge border">{{ job.category.name }}</span>
+                                {% else %}
+                                <span class="badge border">General</span>
+                                {% endif %}
                                 <span class="text-success small fw-bold">
                                     {% if job.salary_min %}
                                     ${{ job.salary_min|intcomma }} - ${{ job.salary_max|intcomma }}

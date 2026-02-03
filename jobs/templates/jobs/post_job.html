@@ -19,7 +19,8 @@
                         {{ form|crispy }}
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{% url 'employer_dashboard' %}" class="btn btn-light rounded-pill px-4">Cancel</a>
+                            <a href="{% url 'employer_dashboard' %}"
+                                class="btn btn-outline-primary rounded-pill px-4">Cancel</a>
                             <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
                                 {% if object %}Save Changes{% else %}Publish Job{% endif %}
                             </button>

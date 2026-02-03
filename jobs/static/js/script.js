@@ -100,27 +100,23 @@ document.addEventListener('DOMContentLoaded', function () {
     if (locInput) autocomplete(locInput, 'location');
 
 
-    // Initialize Vanta.js Effect (3D Background)
-    if (document.getElementById('hero-animate')) {
-        try {
-            VANTA.NET({
-                el: "#hero-animate",
-                mouseControls: true,
-                touchControls: true,
-                gyroControls: false,
-                minHeight: 200.00,
-                minWidth: 200.00,
-                scale: 1.00,
-                scaleMobile: 1.00,
-                color: 0x4e54c8,       // Primary color
-                backgroundColor: 0x1a1a2e, // Dark background matching theme
-                points: 12.00,
-                maxDistance: 22.00,
-                spacing: 18.00
-            })
-        } catch (e) {
-            console.log("Vanta JS failed to load", e);
-        }
+    // Initialize Vanta.js Effect (optional background)
+    if (document.getElementById('hero-animate') && window.VANTA && window.VANTA.NET && window.THREE) {
+        VANTA.NET({
+            el: "#hero-animate",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x0a66c2,
+            backgroundColor: 0xf3f2ef,
+            points: 10.00,
+            maxDistance: 22.00,
+            spacing: 20.00
+        })
     }
 
     // Initialize Vanilla-Tilt for 3D Cards

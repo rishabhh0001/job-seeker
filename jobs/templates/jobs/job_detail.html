@@ -16,7 +16,11 @@
                     <div>
                         <h2 class="fw-bold mb-1">{{ job.title }}</h2>
                         <div class="text-muted">
-                            <span class="fw-medium text-dark">{{ job.employer.company_name }}</span> &bull;
+                            <span class="fw-medium text-main">
+                                <a href="{% url 'company_detail' job.employer.pk %}" class="text-decoration-none text-main">
+                                    {{ job.employer.company_name|default:"Confidential" }}
+                                </a>
+                            </span> &bull;
                             <i class="fas fa-map-marker-alt ms-2 me-1 small"></i>{{ job.location }}
                         </div>
                     </div>
@@ -24,7 +28,11 @@
 
                 <div class="d-flex flex-wrap gap-2 mb-4">
                     <span class="badge badge-soft-primary px-3 py-2 rounded-pill">{{ job.get_job_type_display }}</span>
+                    {% if job.category %}
                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">{{ job.category.name }}</span>
+                    {% else %}
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">General</span>
+                    {% endif %}
                     {% if job.salary_min %}
                     <span class="badge badge-soft-success px-3 py-2 rounded-pill">
                         ${{ job.salary_min|intcomma }} - ${{ job.salary_max|intcomma }} / yr

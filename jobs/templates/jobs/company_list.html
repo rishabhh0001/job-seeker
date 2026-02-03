@@ -8,30 +8,30 @@
     <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
             <h1 class="display-5 fw-bold">Top <span class="text-primary">Companies</span> Hiring Now</h1>
-            <p class="lead text-muted">Join the teams building the future</p>
+            <p class="lead text-muted">Discover employer pages inspired by LinkedIn, powered by Dask colors.</p>
         </div>
 
         <div class="row g-4">
             {% for employer in employers %}
             <div class="col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'100' }}">
-                <div class="card h-100 hover-shadow border-0 bg-dark text-light glass-effect">
+                <div class="card h-100 company-card">
                     <div class="card-body text-center p-4">
-                        <div class="avatar-xl mx-auto mb-3 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center display-4 fw-bold"
-                            style="width: 80px; height: 80px;">
+                        <div class="company-avatar mx-auto mb-3">
                             {{ employer.company_name|default:employer.username|make_list|first|upper }}
                         </div>
                         <h4 class="card-title fw-bold mb-1">{{ employer.company_name|default:employer.username }}</h4>
                         <p class="text-muted small mb-3">
                             <i class="fas fa-map-marker-alt me-1"></i> {{ employer.location|default:"Remote" }}
                         </p>
-                        <hr class="border-secondary opacity-50">
+                        <hr class="border-secondary opacity-25">
                         <div class="d-flex justify-content-around text-center mb-3">
                             <div>
-                                <h5 class="fw-bold mb-0 text-primary">{{ employer.posted_jobs.count }}</h5>
+                                <h5 class="fw-bold mb-0 text-primary">{{ employer.open_jobs|default_if_none:0 }}</h5>
                                 <small class="text-muted">Open Jobs</small>
                             </div>
                         </div>
-                        <a href="#" class="btn btn-outline-primary rounded-pill w-100 stretched-link">View Profile</a>
+                        <a href="{% url 'company_detail' employer.pk %}"
+                            class="btn btn-outline-primary rounded-pill w-100 stretched-link">View Company</a>
                     </div>
                 </div>
             </div>
@@ -44,13 +44,4 @@
         </div>
     </div>
 </section>
-
-<style>
-    .glass-effect {
-        background: rgba(30, 30, 40, 0.6);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    }
-</style>
 {% endblock %}
