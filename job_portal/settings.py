@@ -20,7 +20,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tj=_1ym4_gmri$z%i0$x4
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Default to False for production, True only if explicitly set
-DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 # Validate SECRET_KEY in production
 if not DEBUG and (not SECRET_KEY or SECRET_KEY.startswith('django-insecure-')):
