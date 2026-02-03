@@ -21,7 +21,7 @@
     "routes": [
         {
             "src": "/static/(.*)",
-            "dest": "/staticfiles/$1"
+            "dest": "/$1"
         },
         {
             "src": "/media/(.*)",
@@ -31,6 +31,5 @@
             "src": "/(.*)",
             "dest": "/api/index.py"
         }
-    ],
-    "outputDirectory": "staticfiles"
+    ]
 }
