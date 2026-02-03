@@ -12,13 +12,13 @@ echo "📦 Installing optimized dependencies..."
 # Use production requirements for smaller deployment size
 if [ -f "requirements-production.txt" ]; then
     echo "Using production requirements (optimized)"
-    pip install --break-system-packages --no-cache-dir -r requirements-production.txt
+    pip install --root-user-action=ignore --break-system-packages --no-cache-dir -r requirements-production.txt
 elif [ -f "requirements-minimal.txt" ]; then
     echo "Using minimal requirements (fallback)"
-    pip install --break-system-packages --no-cache-dir -r requirements-minimal.txt
+    pip install --root-user-action=ignore --break-system-packages --no-cache-dir -r requirements-minimal.txt
 else
     echo "Using standard requirements"
-    pip install --break-system-packages --no-cache-dir -r requirements.txt
+    pip install --root-user-action=ignore --break-system-packages --no-cache-dir -r requirements.txt
 fi
 
 # 2. DEPENDENCY CLEANUP
