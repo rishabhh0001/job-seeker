@@ -22,11 +22,12 @@ except Exception as e:
     import traceback
     traceback.print_exc()
     
+    error_msg = str(e)
     # Create a simple error response app for debugging
     def error_app(environ, start_response):
         status = '500 Internal Server Error'
         headers = [('Content-type', 'text/plain')]
         start_response(status, headers)
-        return [f"Django initialization error: {str(e)}".encode('utf-8')]
+        return [f"Django initialization error: {error_msg}".encode('utf-8')]
     
     app = error_app
