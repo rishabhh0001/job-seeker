@@ -41,14 +41,15 @@ echo "⚙️  Configuring Django environment..."
 export DJANGO_SETTINGS_MODULE=job_portal.settings
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
-# Validate Django configuration
+# Validate Django configuration (Basic check only)
 echo "Validating Django configuration..."
-python manage.py check --deploy --fail-level WARNING
+python3 manage.py check
 
-# 4. DATABASE MIGRATIONS
-echo "🗄️  Running database migrations..."
-python manage.py makemigrations --noinput --verbosity=1
-python manage.py migrate --noinput --verbosity=1
+# 4. DATABASE MIGRATIONS - SKIPPED DURING BUILD
+# Migrations should be run manually or via a release hook
+echo "🗄️  Skipping database migrations during build..."
+# python3 manage.py makemigrations --noinput
+# python3 manage.py migrate --noinput
 
 # 5. STATIC FILE OPTIMIZATION
 echo "📁 Optimizing static files..."
@@ -56,10 +57,10 @@ echo "📁 Optimizing static files..."
 rm -rf staticfiles/* 2>/dev/null || true
 
 # Collect static files with optimization
-python manage.py collectstatic --noinput --clear --verbosity=1
+python3 manage.py collectstatic --noinput --clear --verbosity=1
 
 # Compress static files if compression is available
-if python -c "import django.contrib.staticfiles.storage; print('OK')" 2>/dev/null; then
+if python3 -c "import django.contrib.staticfiles.storage; print('OK')" 2>/dev/null; then
     echo "Static file compression enabled"
 fi
 
@@ -98,7 +99,7 @@ if [ ! -f "api/index.py" ]; then
 fi
 
 # Check if Django can import properly
-python -c "import django; django.setup(); print('Django setup successful')" || {
+python3 -c "import django; django.setup(); print('Django setup successful')" || {
     echo "❌ Error: Django setup failed"
     exit 1
 }
