@@ -20,6 +20,14 @@
     ],
     "routes": [
         {
+            "src": "/static/(.*)",
+            "dest": "/staticfiles/$1"
+        },
+        {
+            "src": "/favicon.ico",
+            "dest": "/staticfiles/favicon.ico"
+        },
+        {
             "src": "/(.*)",
             "dest": "/api/index.py"
         }
