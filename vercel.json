@@ -7,6 +7,10 @@
             "config": {
                 "distDir": "staticfiles"
             }
+        },
+        {
+            "src": "api/index.py",
+            "use": "@vercel/python"
         }
     ],
     "functions": {
