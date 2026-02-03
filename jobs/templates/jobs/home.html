@@ -95,6 +95,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 text-center text-md-start">
+                            <h5 class="fw-bold mb-1"><a href="{% url 'job_detail' job.slug %}"
                                     class="text-main text-decoration-none stretched-link">{{ job.title }}</a></h5>
                             <div class="text-muted mb-2">
                                 <span class="fw-medium text-main">{{ job.employer.company_name|default:"Confidential"
