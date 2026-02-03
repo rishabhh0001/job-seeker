@@ -151,7 +151,7 @@ doc/
 # DEVELOPMENT REQUIREMENTS AND CONFIG FILES
 # -----------------------------------------------------------------------------
 # Use production requirements only - keep requirements-production.txt
-requirements.txt
+# requirements.txt  <-- Kept for Vercel Python builder
 requirements-dev.txt
 requirements-test.txt
 requirements-minimal.txt
