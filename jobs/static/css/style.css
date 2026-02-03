@@ -1,11 +1,189 @@
 :root {
-    --primary: #4e54c8;
-    --secondary: #8f94fb;
-    --dark: #1a1a2e;
-    --light: #f8f9fa;
-    --accent: #00d2ff;
-    --glass-bg: rgba(255, 255, 255, 0.95);
-    --glass-border: rgba(255, 255, 255, 0.2);
+    --primary: #0a66c2;       /* LinkedIn Blue */
+    --primary-hover: #004182;
+    --secondary: #70b5f9;
+    --dark: #000000;          /* Deep Black Background */
+    --card-bg: #1b1f23;       /* Dark Slate/Zinc for Cards */
+    --border-color: #38434f;
+    --text-main: #ffffff;
+    --text-muted: #e1e9ee;
+    --accent: #70b5f9;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Outfit', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: var(--dark);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* Navbar */
+.glass-nav {
+    background: rgba(27, 31, 35, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.8rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary) !important;
+}
+
+.navbar-brand span {
+    color: var(--text-main);
+}
+
+.nav-link {
+    color: var(--text-muted) !important;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--text-main) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary);
+    border: none;
+    border-radius: 24px; /* LinkedIn Pill shape */
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+    border-radius: 24px;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(10, 102, 194, 0.1); /* Subtle blue tint */
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-main);
+}
+
+.card:hover {
+    box-shadow: 0 0 0 1px var(--text-muted); /* Subtle highlight */
+}
+
+/* Search Box */
+.search-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.form-control {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.form-control:focus {
+    background-color: transparent;
+    border-color: var(--primary);
+    color: var(--text-main);
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.3);
+}
+
+.form-control::placeholder {
+    color: #8c959f;
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: var(--dark);
+    padding: 100px 0;
+}
+
+/* Autocomplete */
+.autocomplete-items {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 0 0 8px 8px;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.autocomplete-items div:hover {
+    background-color: #2c333a;
+}
+
+.autocomplete-active {
+    background-color: #2c333a !important;
+}
+
+/* Text Colors */
+.text-muted {
+    color: #8c959f !important;
+}
+
+.text-primary-gradient {
+    color: var(--primary);
+    background: none;
+    -webkit-text-fill-color: initial;
+}
+
+/* Avatars */
+.avatar-lg {
+    background-color: #2c333a !important; /* Lighter than card bg */
+    color: var(--text-main) !important;
+}
+
+/* Footer */
+footer {
+    background-color: var(--card-bg) !important;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Job Cards Specifics */
+.job-card .badge {
+    background-color: rgba(10, 102, 194, 0.1);
+    color: var(--secondary);
+    border: 1px solid rgba(10, 102, 194, 0.2);
+}
+
+/* Dropdown */
+.dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color);
+}
+
+.dropdown-item {
+    color: var(--text-main) !important;
+}
+
+.dropdown-item:hover {
+    background-color: #2c333a !important;
 }
 
 html {
