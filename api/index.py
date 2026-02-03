@@ -15,6 +15,32 @@ try:
     import django
     django.setup()
     
+    # Run migrations automatically on startup (for Vercel)
+    # Only run once per deployment using a module-level flag
+    from django.core.management import call_command
+    from django.db import connection
+    from django.db.utils import OperationalError
+    
+    # Module-level flag to ensure migrations run only once
+    if not hasattr(sys.modules[__name__], '_migrations_run'):
+        try:
+            # Check if database is accessible
+            connection.ensure_connection()
+            
+            # Run migrations
+            print("Running database migrations...")
+            call_command('migrate', '--noinput', verbosity=0)
+            print("Migrations completed successfully")
+            
+            # Set flag to prevent re-running
+            setattr(sys.modules[__name__], '_migrations_run', True)
+        except OperationalError as db_error:
+            print(f"Database connection error: {db_error}")
+            # Continue anyway - let Django handle the error
+        except Exception as migration_error:
+            print(f"Migration error (non-fatal): {migration_error}")
+            # Continue anyway - migrations might already be applied
+    
     # Get the WSGI application
     app = get_wsgi_application()
 except Exception as e:
