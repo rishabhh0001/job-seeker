@@ -45,7 +45,7 @@
                         <a class="nav-link" href="{% url 'home' %}">Jobs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Companies</a>
+                        <a class="nav-link" href="{% url 'company_list' %}">Companies</a>
                     </li>
 
                     {% if user.is_authenticated %}
