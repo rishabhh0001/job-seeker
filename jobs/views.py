@@ -14,6 +14,17 @@ class EmployerRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and self.request.user.is_employer
 
+class CompanyListView(ListView):
+    model = Job  # Ideally User where is_employer=True, but using Job to get active employers
+    template_name = 'jobs/company_list.html'
+    context_object_name = 'employers'
+    
+    def get_queryset(self):
+        # Get unique employers who have posted jobs
+        from .models import User
+        # Return all users who are employers
+        return User.objects.filter(is_employer=True)
+
 class SeekerRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_authenticated and (self.request.user.is_seeker or not self.request.user.is_employer)
