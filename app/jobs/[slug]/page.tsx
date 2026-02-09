@@ -45,9 +45,9 @@ export default async function JobDetailPage({
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Main content */}
         <div className="lg:col-span-2">
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
             <div className="flex items-start gap-4">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-muted text-primary">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
                 <Building2 className="h-7 w-7" />
               </div>
               <div>
@@ -77,7 +77,7 @@ export default async function JobDetailPage({
                 </span>
               )}
               {(job.salary_min || job.salary_max) && (
-                <span className="rounded-full border border-[hsl(184,100%,35%)]/20 bg-[hsl(184,100%,35%)]/10 px-3 py-1 text-xs font-bold text-[hsl(184,100%,35%)]">
+                <span className="rounded-full border border-accent/20 bg-accent/10 px-3 py-1 text-xs font-bold text-accent">
                   {formatSalary(job.salary_min, job.salary_max)} / yr
                 </span>
               )}
@@ -96,12 +96,12 @@ export default async function JobDetailPage({
 
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24 rounded-2xl border border-border bg-card p-6 shadow-sm">
+          <div className="sticky top-24 rounded-xl border border-border bg-card p-6 shadow-sm">
             <h3 className="mb-4 font-heading text-base font-bold text-foreground">Job Overview</h3>
 
             <ul className="space-y-4">
               <li className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
                   <Calendar className="h-4 w-4" />
                 </div>
                 <div>
@@ -110,7 +110,7 @@ export default async function JobDetailPage({
                 </div>
               </li>
               <li className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div>
@@ -119,7 +119,7 @@ export default async function JobDetailPage({
                 </div>
               </li>
               <li className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
                   <DollarSign className="h-4 w-4" />
                 </div>
                 <div>
@@ -130,7 +130,7 @@ export default async function JobDetailPage({
                 </div>
               </li>
               <li className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted text-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
                   <Briefcase className="h-4 w-4" />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ export default async function JobDetailPage({
             <div className="mt-6">
               <Link
                 href={`/jobs/${slug}/apply`}
-                className="block w-full rounded-full bg-primary px-6 py-3 text-center text-sm font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
+                className="block w-full rounded-lg bg-gradient-to-r from-primary to-accent px-6 py-3 text-center text-sm font-bold text-primary-foreground shadow-sm transition-all hover:shadow-md hover:scale-105"
               >
                 Apply Now
               </Link>

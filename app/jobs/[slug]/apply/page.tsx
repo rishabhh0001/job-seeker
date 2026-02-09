@@ -106,7 +106,7 @@ export default function ApplyPage() {
         Back to job
       </Link>
 
-      <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+      <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
         <h1 className="mb-2 font-heading text-3xl font-bold text-foreground">
           Apply for this Position
         </h1>
@@ -134,7 +134,7 @@ export default function ApplyPage() {
                 onChange={handleInputChange}
                 placeholder="John Doe"
                 required
-                className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-border bg-input px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
               />
             </div>
 
@@ -150,7 +150,7 @@ export default function ApplyPage() {
                 onChange={handleInputChange}
                 placeholder="john@example.com"
                 required
-                className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-border bg-input px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
               />
             </div>
           </div>
@@ -180,7 +180,7 @@ export default function ApplyPage() {
                 onChange={handleInputChange}
                 placeholder="Write a brief cover letter explaining your interest and qualifications..."
                 rows={6}
-                className="mt-1 w-full rounded-lg border border-border bg-background px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-border bg-input px-4 py-2 text-foreground placeholder-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
               />
               <p className="mt-1 text-xs text-muted-foreground">
                 Leave blank to skip this section
@@ -218,7 +218,7 @@ export default function ApplyPage() {
             <button
               type="submit"
               disabled={loading || success}
-              className="flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
+              className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-primary to-accent px-6 py-3 font-medium text-primary-foreground transition-all hover:shadow-lg disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
               {loading ? "Submitting..." : "Submit Application"}

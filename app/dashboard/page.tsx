@@ -52,7 +52,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="font-heading text-2xl font-bold text-foreground">
             Employer{" "}
-            <span className="bg-gradient-to-r from-primary to-[hsl(184,100%,35%)] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Dashboard
             </span>
           </h1>
@@ -80,9 +80,9 @@ export default async function DashboardPage() {
 
       {/* Stats */}
       <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
               <Briefcase className="h-5 w-5" />
             </div>
             <div>
@@ -91,9 +91,9 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[hsl(184,100%,35%)]/10 text-[hsl(184,100%,35%)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-accent">
               <Eye className="h-5 w-5" />
             </div>
             <div>
@@ -102,7 +102,7 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Users className="h-5 w-5" />
@@ -113,7 +113,7 @@ export default async function DashboardPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[hsl(184,100%,35%)]/10 text-[hsl(184,100%,35%)]">
               <Building2 className="h-5 w-5" />
@@ -134,7 +134,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Jobs table */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -236,7 +236,7 @@ export default async function DashboardPage() {
               .filter((j) => j.application_count > 0)
               .slice(0, 3)
               .map((job) => (
-                <div key={job.id} className="rounded-2xl border border-border bg-card p-6">
+                <div key={job.id} className="rounded-xl border border-border bg-card p-6">
                   <h3 className="mb-4 font-heading text-lg font-bold text-foreground">
                     {job.title}
                     <span className="ml-2 text-sm text-muted-foreground">
@@ -247,7 +247,7 @@ export default async function DashboardPage() {
                 </div>
               ))
           ) : (
-            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+            <div className="rounded-xl border border-border bg-card p-8 text-center">
               <Users className="mx-auto h-8 w-8 text-muted-foreground/40" />
               <p className="mt-2 text-muted-foreground">No applications yet. Post a job to start receiving applications.</p>
             </div>

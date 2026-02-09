@@ -75,7 +75,7 @@ export default async function HomePage({
       <section className="mx-auto max-w-6xl px-4 pb-16">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="font-heading text-2xl font-bold text-foreground">
-            Latest <span className="bg-gradient-to-r from-primary to-[hsl(184,100%,35%)] bg-clip-text text-transparent">Jobs</span>
+            Latest <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Jobs</span>
           </h2>
           <span className="text-sm text-muted-foreground">{jobs.length} jobs found</span>
         </div>

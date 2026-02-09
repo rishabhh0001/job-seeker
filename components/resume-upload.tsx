@@ -140,7 +140,7 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
   }
 
   return (
-    <div className="w-full rounded-lg border border-border bg-card p-6">
+    <div className="w-full rounded-lg border border-border bg-secondary/30 p-6">
       <h3 className="mb-4 font-heading text-lg font-bold text-foreground">Upload Your Resume</h3>
 
       {/* Tab Navigation */}
@@ -165,7 +165,7 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
       {/* File Upload Tab */}
       {uploadTab === "file" && (
         <div
-          className="rounded-lg border-2 border-dashed border-border p-8 text-center transition-colors hover:border-primary hover:bg-primary/5 cursor-pointer"
+          className="rounded-lg border-2 border-dashed border-primary/30 p-8 text-center transition-colors hover:border-primary hover:bg-primary/10 cursor-pointer"
           onClick={() => fileInputRef.current?.click()}
         >
           <input
@@ -203,12 +203,12 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
     }
   ]
 }`}
-            className="min-h-64 w-full rounded-lg border border-border bg-background p-3 font-mono text-sm placeholder-muted-foreground"
+            className="min-h-64 w-full rounded-lg border border-border bg-input p-3 font-mono text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
           />
           <button
             onClick={handleJsonInput}
             disabled={loading}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:shadow-md disabled:opacity-50"
           >
             {loading ? "Processing..." : "Parse JSON Resume"}
           </button>
@@ -226,7 +226,7 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
           <button
             onClick={handleManualInput}
             disabled={loading}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
+            className="rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:shadow-md disabled:opacity-50"
           >
             {loading ? "Processing..." : "Submit Resume"}
           </button>
@@ -252,9 +252,9 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
 
       {/* Resume Preview */}
       {resumeData && (
-        <div className="mt-6 rounded-lg border border-border bg-muted p-4">
+        <div className="mt-6 rounded-lg border border-border bg-secondary/50 p-4">
           <h4 className="mb-2 text-sm font-semibold text-foreground">Resume Preview</h4>
-          <div className="max-h-48 overflow-y-auto whitespace-pre-wrap rounded bg-background p-3 text-xs text-muted-foreground">
+          <div className="max-h-48 overflow-y-auto whitespace-pre-wrap rounded bg-input p-3 text-xs text-muted-foreground">
             {resumeData.data
               ? JSON.stringify(resumeData.data, null, 2)
               : resumeData.text?.substring(0, 2000) || ""}

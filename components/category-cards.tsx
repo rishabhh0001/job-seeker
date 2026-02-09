@@ -19,10 +19,10 @@ export function CategoryCards({ categories }: { categories: Category[] }) {
           <Link
             key={cat.id}
             href={`/?category=${cat.slug}`}
-            className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-5 text-center transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+            className="group flex flex-col items-center gap-3 rounded-xl border border-border bg-card/50 p-4 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:bg-card hover:shadow-lg"
           >
-            <div className="text-primary transition-transform group-hover:scale-110">
-              {ICONS[cat.slug] ?? <Layers className="h-7 w-7" />}
+            <div className="rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 p-2.5 text-primary transition-transform group-hover:scale-110">
+              {ICONS[cat.slug] ?? <Layers className="h-6 w-6" />}
             </div>
             <h3 className="font-heading text-sm font-bold text-foreground">{cat.name}</h3>
             <p className="text-xs text-muted-foreground">{cat.job_count ?? 0} Openings</p>

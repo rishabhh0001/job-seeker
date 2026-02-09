@@ -39,9 +39,9 @@ export default async function CompaniesPage() {
               <Link
                 key={emp.id}
                 href={`/companies/${emp.id}`}
-                className="group flex flex-col items-center rounded-2xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+                className="group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
               >
-                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[hsl(184,100%,35%)] to-primary text-2xl font-bold text-primary-foreground">
+                <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-2xl font-bold text-primary-foreground">
                   {initial}
                 </div>
                 <h3 className="mt-4 font-heading text-lg font-bold text-foreground">

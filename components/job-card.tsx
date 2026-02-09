@@ -5,10 +5,10 @@ import { JOB_TYPE_LABELS, formatSalary, timeAgo } from "@/lib/db"
 
 export function JobCard({ job }: { job: Job }) {
   return (
-    <div className="group flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md md:flex-row md:items-center">
+    <div className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg md:flex-row md:items-center">
       {/* Icon */}
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-        <Building2 className="h-6 w-6" />
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
+        <Building2 className="h-5 w-5" />
       </div>
 
       {/* Info */}
@@ -41,7 +41,7 @@ export function JobCard({ job }: { job: Job }) {
             </span>
           )}
           {(job.salary_min || job.salary_max) && (
-            <span className="text-xs font-bold text-[hsl(184,100%,35%)]">
+            <span className="text-xs font-bold text-accent">
               {formatSalary(job.salary_min, job.salary_max)}
             </span>
           )}

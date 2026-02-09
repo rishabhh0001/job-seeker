@@ -60,9 +60,9 @@ export default async function CompanyDetailPage({
       </Link>
 
       {/* Company hero */}
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[hsl(184,100%,35%)] to-primary text-2xl font-bold text-primary-foreground">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-2xl font-bold text-primary-foreground">
             {initial}
           </div>
           <div className="text-center sm:text-left">
@@ -96,7 +96,7 @@ export default async function CompanyDetailPage({
             <p className="text-xs text-muted-foreground">Total Jobs</p>
           </div>
           <div className="col-span-2 rounded-xl border border-border bg-muted/50 p-4 text-center sm:col-span-1">
-            <p className="font-heading text-2xl font-bold text-[hsl(184,100%,35%)]">Active</p>
+            <p className="font-heading text-2xl font-bold text-accent">Active</p>
             <p className="text-xs text-muted-foreground">Hiring Status</p>
           </div>
         </div>
