@@ -45,20 +45,65 @@ export function Navbar() {
 
         {/* Desktop */}
         <div className="hidden items-center gap-1 md:flex">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={cn(
-                "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
-                pathname === l.href
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              )}
-            >
-              {l.label}
-            </Link>
-          ))}
+          <Link
+            href="/"
+            className={cn(
+              "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
+              pathname === "/"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            )}
+          >
+            Jobs
+          </Link>
+          <Link
+            href="/companies"
+            className={cn(
+              "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
+              pathname === "/companies"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            )}
+          >
+            Companies
+          </Link>
+          <Link
+            href="/dashboard"
+            className={cn(
+              "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
+              pathname === "/dashboard"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            )}
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/my-applications"
+            className={cn(
+              "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
+              pathname === "/my-applications"
+                ? "bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            )}
+          >
+            My Applications
+          </Link>
+        </div>
+
+        <div className="hidden md:flex items-center gap-2">
+          <a
+            href="/accounts/login/"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-2 transition-colors"
+          >
+            Login
+          </a>
+          <a
+            href="/accounts/signup/"
+            className="text-sm font-bold bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Sign Up
+          </a>
         </div>
 
         {/* Mobile toggle */}
@@ -73,22 +118,50 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="animate-fade-down border-t border-border bg-card/95 px-4 py-3 backdrop-blur-xl md:hidden">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={cn(
-                "block rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors",
-                pathname === l.href
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              )}
-              onClick={() => setOpen(false)}
+        <div className="animate-fade-down border-t border-border bg-card/95 px-4 py-3 backdrop-blur-xl md:hidden space-y-1">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          >
+            Jobs
+          </Link>
+          <Link
+            href="/companies"
+            onClick={() => setOpen(false)}
+            className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          >
+            Companies
+          </Link>
+          <Link
+            href="/dashboard"
+            onClick={() => setOpen(false)}
+            className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          >
+            Dashboard
+          </Link>
+          <Link
+            href="/my-applications"
+            onClick={() => setOpen(false)}
+            className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+          >
+            My Applications
+          </Link>
+
+          <div className="pt-3 mt-2 border-t border-border grid grid-cols-2 gap-3">
+            <a
+              href="/accounts/login/"
+              className="flex items-center justify-center rounded-lg px-3 py-2 text-sm font-medium border border-border text-foreground hover:bg-muted/50"
             >
-              {l.label}
-            </Link>
-          ))}
+              Login
+            </a>
+            <a
+              href="/accounts/signup/"
+              className="flex items-center justify-center rounded-lg px-3 py-2 text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Sign Up
+            </a>
+          </div>
         </div>
       )}
     </nav>

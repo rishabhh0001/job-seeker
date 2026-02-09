@@ -81,6 +81,24 @@ export async function PUT(request: NextRequest) {
             )
         }
 
+        if (result.length > 0) {
+            // Fetch applicant details for email
+            const applicationDetails = await sql`
+                SELECT a.status, u.email, u.first_name, u.username, j.title as job_title
+                FROM jobs_application a
+                JOIN jobs_user u ON u.id = a.applicant_id
+                JOIN jobs_job j ON j.id = a.job_id
+                WHERE a.id = ${id}
+            `
+
+            if (applicationDetails.length > 0) {
+                const { email, username, job_title, status: newStatus } = applicationDetails[0] as any
+                // Dynamic import to avoid circular dependencies if any, though likely safe to import at top
+                const { sendStatusUpdateEmail } = await import("@/lib/email")
+                await sendStatusUpdateEmail(email, username || "Applicant", job_title, newStatus)
+            }
+        }
+
         return NextResponse.json({ application: result[0] })
     } catch (error) {
         console.error("Error updating application:", error)
