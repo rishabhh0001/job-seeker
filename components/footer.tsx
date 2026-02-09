@@ -1,7 +1,38 @@
 import Link from "next/link"
-import { Briefcase } from "lucide-react"
+import { Briefcase, Check, Loader2 } from "lucide-react"
+import { useState } from "react"
 
 export function Footer() {
+  const [email, setEmail] = useState("")
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [message, setMessage] = useState("")
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+
+    setStatus("loading")
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+
+      if (res.ok) {
+        setStatus("success")
+        setMessage("Saved successfully")
+        setEmail("")
+      } else {
+        setStatus("error")
+        setMessage("Something went wrong. Please try again.")
+      }
+    } catch (error) {
+      setStatus("error")
+      setMessage("Failed to connect. Please try again.")
+    }
+  }
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-6xl px-4 py-12">
@@ -74,19 +105,37 @@ export function Footer() {
             <p className="mb-3 text-sm text-muted-foreground">
               Get the latest jobs in your inbox.
             </p>
-            <form className="flex gap-2">
+            <form onSubmit={handleSubscribe} className="flex gap-2">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email"
-                className="flex-1 rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
+                disabled={status === "loading" || status === "success"}
+                className="flex-1 rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40 disabled:opacity-50"
               />
               <button
-                type="button"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                type="submit"
+                disabled={status === "loading" || status === "success"}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors ${status === "success"
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-primary hover:bg-primary/90"
+                  } disabled:opacity-70`}
               >
-                Join
+                {status === "loading" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : status === "success" ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  "Join"
+                )}
               </button>
             </form>
+            {message && (
+              <p className={`mt-2 text-xs ${status === "success" ? "text-green-600" : "text-destructive"}`}>
+                {message}
+              </p>
+            )}
           </div>
         </div>
         <div className="mt-10 border-t border-border pt-6 text-center text-sm text-muted-foreground">
