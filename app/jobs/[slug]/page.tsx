@@ -143,11 +143,12 @@ export default async function JobDetailPage({
             </ul>
 
             <div className="mt-6">
-              <button
-                className="w-full rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
+              <Link
+                href={`/jobs/${slug}/apply`}
+                className="block w-full rounded-full bg-primary px-6 py-3 text-center text-sm font-bold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
               >
                 Apply Now
-              </button>
+              </Link>
             </div>
           </div>
         </div>

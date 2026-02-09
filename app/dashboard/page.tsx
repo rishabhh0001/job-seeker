@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { sql } from "@/lib/db"
 import { Building2, Eye, Edit, Users, Briefcase, Plus } from "lucide-react"
+import { ApplicationsList } from "@/components/applications-list"
 
 type DashboardJob = {
   id: number
@@ -125,6 +126,13 @@ export default async function DashboardPage() {
         </div>
       </div>
 
+      {/* Sections Tabs */}
+      <div className="mb-6 flex gap-2 border-b border-border">
+        <div className="px-4 py-2 border-b-2 border-primary text-sm font-medium text-primary">
+          Job Listings
+        </div>
+      </div>
+
       {/* Jobs table */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <div className="overflow-x-auto">
@@ -216,6 +224,34 @@ export default async function DashboardPage() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* Applications Section */}
+      <div className="mt-12">
+        <h2 className="mb-6 font-heading text-2xl font-bold text-foreground">Recent Applications</h2>
+        <div className="space-y-6">
+          {jobs.length > 0 ? (
+            jobs
+              .filter((j) => j.application_count > 0)
+              .slice(0, 3)
+              .map((job) => (
+                <div key={job.id} className="rounded-2xl border border-border bg-card p-6">
+                  <h3 className="mb-4 font-heading text-lg font-bold text-foreground">
+                    {job.title}
+                    <span className="ml-2 text-sm text-muted-foreground">
+                      ({job.application_count} {job.application_count === 1 ? "application" : "applications"})
+                    </span>
+                  </h3>
+                  <ApplicationsList jobSlug={job.slug} />
+                </div>
+              ))
+          ) : (
+            <div className="rounded-2xl border border-border bg-card p-8 text-center">
+              <Users className="mx-auto h-8 w-8 text-muted-foreground/40" />
+              <p className="mt-2 text-muted-foreground">No applications yet. Post a job to start receiving applications.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
