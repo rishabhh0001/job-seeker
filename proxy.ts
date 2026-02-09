@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 const protectedRoutes = ["/dashboard", "/my-applications", "/admin"]
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
 
     // Check if the route is protected
