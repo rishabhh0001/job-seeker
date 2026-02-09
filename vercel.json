@@ -1,31 +1,14 @@
 {
   "framework": "nextjs",
-  "builds": [
+  "buildCommand": "pnpm run build",
+  "rewrites": [
     {
-      "src": "api/index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/admin.*",
-      "dest": "/api/index.py"
+      "source": "/admin/:path*",
+      "destination": "/api/index.py"
     },
     {
-      "src": "/accounts.*",
-      "dest": "/api/index.py"
-    },
-    {
-      "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
-    },
-    {
-      "src": "/media/(.*)",
-      "dest": "/media/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/accounts/:path*",
+      "destination": "/api/index.py"
     }
   ]
 }
