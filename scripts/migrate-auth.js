@@ -95,6 +95,7 @@ async function migrate() {
       "backedUp" BOOLEAN NOT NULL DEFAULT FALSE,
       transports TEXT,
       "credentialID" TEXT,
+      "aaguid" TEXT,
       "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `
