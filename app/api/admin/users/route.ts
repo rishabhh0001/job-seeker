@@ -1,39 +1,46 @@
 import { sql } from "@/lib/db"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 
-// GET - List all users with filters
+const OWNER_EMAIL = "rishabh.joshi260905@gmail.com"
+const VALID_ROLES = ["owner", "superadmin", "admin", "employer", "applicant"]
+
+async function requireAdmin() {
+    const session = await auth.api.getSession({ headers: await headers() })
+    if (!session) return null
+    const role = (session.user as any).role
+    if (!["owner", "superadmin", "admin"].includes(role)) return null
+    return session
+}
+
+// GET - List all users from Better Auth user table
 export async function GET(request: NextRequest) {
     try {
-        const searchParams = request.nextUrl.searchParams
-        const userType = searchParams.get("type")
-        const isActive = searchParams.get("isActive")
-
-        let query = `
-      SELECT id, username, email, company_name, is_employer, is_seeker,
-             is_active, date_joined
-      FROM jobs_user
-    `
-
-        const conditions: string[] = []
-        const params: any[] = []
-
-        if (userType === "employer") {
-            conditions.push("is_employer = true")
-        } else if (userType === "seeker") {
-            conditions.push("is_seeker = true")
+        const session = await requireAdmin()
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
         }
 
-        if (isActive !== null && isActive !== undefined) {
-            conditions.push(`is_active = ${isActive === "true"}`)
+        const roleFilter = request.nextUrl.searchParams.get("role")
+
+        let users
+        if (roleFilter && VALID_ROLES.includes(roleFilter)) {
+            users = await sql`
+        SELECT id, name, email, role, "firstName", "lastName", "companyName",
+               "emailVerified", image, "createdAt", "updatedAt"
+        FROM "user"
+        WHERE role = ${roleFilter}
+        ORDER BY "createdAt" DESC
+      `
+        } else {
+            users = await sql`
+        SELECT id, name, email, role, "firstName", "lastName", "companyName",
+               "emailVerified", image, "createdAt", "updatedAt"
+        FROM "user"
+        ORDER BY "createdAt" DESC
+      `
         }
-
-        if (conditions.length > 0) {
-            query += ` WHERE ${conditions.join(" AND ")}`
-        }
-
-        query += ` ORDER BY date_joined DESC`
-
-        const users = await sql(query, params)
 
         return NextResponse.json({ users })
     } catch (error) {
@@ -42,109 +49,93 @@ export async function GET(request: NextRequest) {
     }
 }
 
-// POST - Create new user
-export async function POST(request: NextRequest) {
-    try {
-        const { username, email, companyName, isEmployer, isSeeker, isActive } =
-            await request.json()
-
-        if (!username || !email) {
-            return NextResponse.json(
-                { error: "Username and email are required" },
-                { status: 400 }
-            )
-        }
-
-        const result = await sql`
-      INSERT INTO jobs_user (
-        username, email, company_name, is_employer, is_seeker,
-        is_active, password, date_joined
-      ) VALUES (
-        ${username}, ${email}, ${companyName || ""},
-        ${isEmployer || false}, ${isSeeker || false},
-        ${isActive !== false}, '', NOW()
-      )
-      RETURNING id, username, email, company_name, is_employer, is_seeker, is_active, date_joined
-    `
-
-        return NextResponse.json({ user: result[0] }, { status: 201 })
-    } catch (error) {
-        console.error("Error creating user:", error)
-        if (error instanceof Error && error.message.includes("duplicate")) {
-            return NextResponse.json(
-                { error: "A user with this email or username already exists" },
-                { status: 409 }
-            )
-        }
-        return NextResponse.json({ error: "Failed to create user" }, { status: 500 })
-    }
-}
-
-// PUT - Update user
+// PUT - Update user role (admin only)
 export async function PUT(request: NextRequest) {
     try {
-        const { id, username, email, companyName, isEmployer, isSeeker, isActive } =
-            await request.json()
+        const session = await requireAdmin()
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+        }
 
-        if (!id || !username || !email) {
-            return NextResponse.json(
-                { error: "ID, username, and email are required" },
-                { status: 400 }
-            )
+        const { id, role, firstName, lastName, companyName } = await request.json()
+        const currentUserRole = (session.user as any).role
+
+        if (!id) {
+            return NextResponse.json({ error: "User ID is required" }, { status: 400 })
+        }
+
+        // Get target user
+        const targetUser = await sql`SELECT id, email, role FROM "user" WHERE id = ${id}`
+        if (targetUser.length === 0) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 })
+        }
+
+        const target = targetUser[0] as any
+
+        // Prevent editing the owner
+        if (target.email === OWNER_EMAIL && session.user.email !== OWNER_EMAIL) {
+            return NextResponse.json({ error: "Cannot modify the owner account" }, { status: 403 })
+        }
+
+        // Validate role
+        if (role && !VALID_ROLES.includes(role)) {
+            return NextResponse.json({ error: "Invalid role" }, { status: 400 })
+        }
+
+        // Only owner can set owner/superadmin roles
+        if (role && ["owner", "superadmin"].includes(role) && currentUserRole !== "owner") {
+            return NextResponse.json({ error: "Only the owner can assign owner/superadmin roles" }, { status: 403 })
+        }
+
+        // Only one owner allowed
+        if (role === "owner" && target.email !== OWNER_EMAIL) {
+            return NextResponse.json({ error: "Only one owner account is allowed" }, { status: 403 })
         }
 
         const result = await sql`
-      UPDATE jobs_user
-      SET username = ${username}, email = ${email},
-          company_name = ${companyName || ""},
-          is_employer = ${isEmployer || false},
-          is_seeker = ${isSeeker || false},
-          is_active = ${isActive !== false}
+      UPDATE "user"
+      SET
+        role = COALESCE(${role || null}, role),
+        "firstName" = COALESCE(${firstName || null}, "firstName"),
+        "lastName" = COALESCE(${lastName || null}, "lastName"),
+        "companyName" = COALESCE(${companyName || null}, "companyName"),
+        "updatedAt" = NOW()
       WHERE id = ${id}
-      RETURNING id, username, email, company_name, is_employer, is_seeker, is_active, date_joined
+      RETURNING id, name, email, role, "firstName", "lastName", "companyName", "createdAt"
     `
-
-        if (result.length === 0) {
-            return NextResponse.json({ error: "User not found" }, { status: 404 })
-        }
 
         return NextResponse.json({ user: result[0] })
     } catch (error) {
         console.error("Error updating user:", error)
-        if (error instanceof Error && error.message.includes("duplicate")) {
-            return NextResponse.json(
-                { error: "A user with this email or username already exists" },
-                { status: 409 }
-            )
-        }
         return NextResponse.json({ error: "Failed to update user" }, { status: 500 })
     }
 }
 
-// DELETE - Delete users
+// DELETE - Delete user (admin only, cannot delete owner)
 export async function DELETE(request: NextRequest) {
     try {
+        const session = await requireAdmin()
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+        }
+
         const { ids } = await request.json()
 
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             return NextResponse.json({ error: "User IDs are required" }, { status: 400 })
         }
 
-        // Delete associated data first
-        await sql`
-      DELETE FROM jobs_application
-      WHERE applicant_id = ANY(${ids})
-    `
+        // Make sure owner is not in the list
+        const ownerCheck = await sql`SELECT id FROM "user" WHERE email = ${OWNER_EMAIL} AND id = ANY(${ids})`
+        if (ownerCheck.length > 0) {
+            return NextResponse.json({ error: "Cannot delete the owner account" }, { status: 403 })
+        }
 
-        await sql`
-      DELETE FROM jobs_job
-      WHERE employer_id = ANY(${ids})
-    `
-
-        await sql`
-      DELETE FROM jobs_user
-      WHERE id = ANY(${ids})
-    `
+        // Delete associated data
+        await sql`DELETE FROM passkey WHERE "userId" = ANY(${ids})`
+        await sql`DELETE FROM session WHERE "userId" = ANY(${ids})`
+        await sql`DELETE FROM account WHERE "userId" = ANY(${ids})`
+        await sql`DELETE FROM "user" WHERE id = ANY(${ids})`
 
         return NextResponse.json({ success: true, deletedCount: ids.length })
     } catch (error) {

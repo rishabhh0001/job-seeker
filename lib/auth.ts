@@ -38,6 +38,24 @@ export const auth = betterAuth({
                 defaultValue: "applicant",
                 input: true,
             },
+            firstName: {
+                type: "string",
+                required: false,
+                defaultValue: "",
+                input: true,
+            },
+            lastName: {
+                type: "string",
+                required: false,
+                defaultValue: "",
+                input: true,
+            },
+            companyName: {
+                type: "string",
+                required: false,
+                defaultValue: "",
+                input: true,
+            },
         },
     },
 })

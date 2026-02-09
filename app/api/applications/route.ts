@@ -1,4 +1,6 @@
 import { sql } from "@/lib/db"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -12,11 +14,22 @@ export async function POST(request: NextRequest) {
     const resumeJson = formData.get("resumeJson") as string
     const resumeFile = formData.get("resumeFile") as File | null
 
-    console.log("Application submission attempt:", { jobSlug, applicantEmail, applicantName })
+    // Try to get session, but allow unauthenticated submissions too
+    let email = applicantEmail
+    let name = applicantName
+    try {
+      const session = await auth.api.getSession({ headers: await headers() })
+      if (session) {
+        email = email || session.user.email
+        name = name || session.user.name
+      }
+    } catch {
+      // No session - that's ok for public applications
+    }
 
-    if (!jobSlug || !applicantName || !applicantEmail) {
+    if (!jobSlug || !name || !email) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Missing required fields: job, name, and email are required" },
         { status: 400 }
       )
     }
@@ -34,60 +47,51 @@ export async function POST(request: NextRequest) {
     `
 
     if (jobRows.length === 0) {
-      console.error("Job not found:", jobSlug)
       return NextResponse.json({ error: "Job not found" }, { status: 404 })
     }
 
     const jobId = (jobRows[0] as { id: number }).id
 
-    // Find or create user by email
+    // Find or create user by email in jobs_user (for backward compat)
     let applicantId: number
     const userRows = await sql`
-      SELECT id FROM jobs_user WHERE email = ${applicantEmail}
+      SELECT id FROM jobs_user WHERE email = ${email}
     `
 
     if (userRows.length > 0) {
       applicantId = (userRows[0] as { id: number }).id
-      console.log("Found existing user:", applicantId)
     } else {
-      // Create a new user for the applicant
-      const username = applicantEmail.split('@')[0] + '_' + Date.now()
+      const username = email.split("@")[0] + "_" + Date.now()
       const newUserRows = await sql`
         INSERT INTO jobs_user (
           username, email, is_seeker, is_active, password, first_name, last_name, date_joined
         ) VALUES (
-          ${username}, ${applicantEmail}, true, true, '', '', '', NOW()
+          ${username}, ${email}, true, true, '', ${name}, '', NOW()
         )
         RETURNING id
       `
       applicantId = (newUserRows[0] as { id: number }).id
-      console.log("Created new user:", applicantId)
     }
 
     let parsedText = ""
 
     // Handle PDF file upload
-    if (resumeFile && resumeFile.name.toLowerCase().endsWith('.pdf')) {
+    if (resumeFile && resumeFile.name.toLowerCase().endsWith(".pdf")) {
       try {
         const arrayBuffer = await resumeFile.arrayBuffer()
         const buffer = Buffer.from(arrayBuffer)
-        const pdfParse = (await import('pdf-parse')).default
+        const pdfParse = (await import("pdf-parse")).default
         const data = await pdfParse(buffer)
         parsedText = data.text
-        console.log("Successfully parsed PDF resume")
       } catch (error) {
         console.error("Error parsing PDF:", error)
-        // Fallback or just log error? We'll continue but log it.
-        parsedText = "Error parsing PDF resume. Please contact the applicant."
+        parsedText = "Error parsing PDF resume."
       }
     } else {
       parsedText =
-        resumeText ||
-        JSON.stringify(JSON.parse(resumeJson || "{}"), null, 2)
+        resumeText || JSON.stringify(JSON.parse(resumeJson || "{}"), null, 2)
     }
 
-    // Store resume as empty string for now (file upload will be handled separately)
-    // The resume field in Django expects a file path, not the content
     const resumePath = ""
 
     const result = await sql`
@@ -98,8 +102,6 @@ export async function POST(request: NextRequest) {
       )
       RETURNING id
     `
-
-    console.log("Application created successfully:", result[0])
 
     return NextResponse.json(
       {
@@ -112,36 +114,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Application submission error:", error)
 
-    // Log detailed error information
     if (error instanceof Error) {
-      console.error("Error message:", error.message)
-      console.error("Error stack:", error.stack)
-    }
-
-    // Provide more specific error messages
-    if (error instanceof Error) {
-      if (error.message.includes("DATABASE_URL")) {
-        return NextResponse.json(
-          { error: "Database configuration error. Please contact support." },
-          { status: 500 }
-        )
-      }
-      if (error.message.includes("connect") || error.message.includes("ECONNREFUSED")) {
-        return NextResponse.json(
-          { error: "Unable to connect to database. Please try again later." },
-          { status: 503 }
-        )
-      }
       if (error.message.includes("duplicate") || error.message.includes("unique")) {
         return NextResponse.json(
           { error: "You have already applied to this job." },
           { status: 409 }
-        )
-      }
-      if (error.message.includes("foreign key") || error.message.includes("violates")) {
-        return NextResponse.json(
-          { error: "Invalid job or user reference. Please try again." },
-          { status: 400 }
         )
       }
     }
@@ -158,10 +135,7 @@ export async function GET(request: NextRequest) {
     const jobSlug = request.nextUrl.searchParams.get("jobSlug")
 
     if (!jobSlug) {
-      return NextResponse.json(
-        { error: "Job slug required" },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "Job slug required" }, { status: 400 })
     }
 
     const applications = await sql`
@@ -181,23 +155,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ applications })
   } catch (error) {
     console.error("Error fetching applications:", error)
-
-    // Provide more specific error messages
-    if (error instanceof Error) {
-      if (error.message.includes("DATABASE_URL")) {
-        return NextResponse.json(
-          { error: "Database configuration error. Please contact support." },
-          { status: 500 }
-        )
-      }
-      if (error.message.includes("connect") || error.message.includes("ECONNREFUSED")) {
-        return NextResponse.json(
-          { error: "Unable to connect to database. Please try again later." },
-          { status: 503 }
-        )
-      }
-    }
-
     return NextResponse.json(
       { error: "Failed to fetch applications" },
       { status: 500 }

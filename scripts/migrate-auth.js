@@ -4,7 +4,7 @@ require("dotenv").config()
 const sql = neon(process.env.DATABASE_URL)
 
 async function migrate() {
-  console.log("Creating Better Auth tables...")
+  console.log("Creating/updating Better Auth tables...\n")
 
   await sql`
     CREATE TABLE IF NOT EXISTS "user" (
@@ -14,11 +14,29 @@ async function migrate() {
       "emailVerified" BOOLEAN NOT NULL DEFAULT FALSE,
       image TEXT,
       role TEXT DEFAULT 'applicant',
+      "firstName" TEXT DEFAULT '',
+      "lastName" TEXT DEFAULT '',
+      "companyName" TEXT DEFAULT '',
       "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `
   console.log("  ✓ user table")
+
+  // Add new columns if they don't exist (safe for re-runs)
+  const newCols = [
+    { name: "firstName", type: "TEXT DEFAULT ''" },
+    { name: "lastName", type: "TEXT DEFAULT ''" },
+    { name: "companyName", type: "TEXT DEFAULT ''" },
+  ]
+  for (const col of newCols) {
+    try {
+      await sql(`ALTER TABLE "user" ADD COLUMN IF NOT EXISTS "${col.name}" ${col.type}`)
+      console.log(`  ✓ column "${col.name}" ensured`)
+    } catch (e) {
+      // column already exists
+    }
+  }
 
   await sql`
     CREATE TABLE IF NOT EXISTS "session" (
@@ -81,7 +99,7 @@ async function migrate() {
   `
   console.log("  ✓ passkey table")
 
-  console.log("\n✅ All tables created successfully!")
+  console.log("\n✅ All tables created/updated successfully!")
 }
 
 migrate().catch((err) => {

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Briefcase, Menu, X, LogOut, User } from "lucide-react"
+import { Briefcase, Menu, X, LogOut, User, Settings } from "lucide-react"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { useSession, signOut } from "@/lib/auth-client"
@@ -17,8 +17,8 @@ export function Navbar() {
   const user = session?.user as any
   const role = user?.role || "applicant"
   const isLoggedIn = !!session
-  const isEmployer = role === "employer" || role === "admin"
-  const isAdmin = role === "admin"
+  const isEmployer = ["employer", "admin", "superadmin", "owner"].includes(role)
+  const isAdmin = ["admin", "superadmin", "owner"].includes(role)
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20)
@@ -119,6 +119,20 @@ export function Navbar() {
               Admin
             </Link>
           )}
+          {isLoggedIn && (
+            <Link
+              href="/profile"
+              className={cn(
+                "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
+                pathname === "/profile"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+              )}
+            >
+              <Settings className="inline h-3.5 w-3.5 mr-1" />
+              Profile
+            </Link>
+          )}
         </div>
 
         {/* Desktop auth */}
@@ -209,6 +223,15 @@ export function Navbar() {
               className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted/50 hover:text-foreground"
             >
               Admin
+            </Link>
+          )}
+          {isLoggedIn && (
+            <Link
+              href="/profile"
+              onClick={() => setOpen(false)}
+              className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+            >
+              Profile
             </Link>
           )}
 
