@@ -21,28 +21,37 @@ export function HeroSection() {
   const popular = ["Designer", "Developer", "Marketing"]
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-secondary via-card to-background px-4 pb-16 pt-24">
-      {/* Decorative shapes */}
-      <div className="pointer-events-none absolute -left-20 -top-24 h-60 w-60 rounded-full bg-accent/5 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-32 -right-32 h-72 w-72 rounded-full bg-primary/5 blur-3xl" />
+    <section className="relative overflow-hidden px-4 pb-20 pt-28">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/5 blur-[120px]" />
+        <div className="absolute left-1/2 top-1/3 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-primary/3 blur-[100px]" />
+      </div>
 
       <div className="relative mx-auto max-w-3xl text-center">
-        <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+        <p className="animate-fade-up mb-4 inline-block rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-semibold tracking-wide text-primary">
+          Thousands of jobs from top companies
+        </p>
+
+        <h1 className="animate-fade-up stagger-1 font-heading text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
           Find Your{" "}
           <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Perfect Job
           </span>{" "}
           Today
         </h1>
-        <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-muted-foreground">
-          Discover opportunities from fast-growing teams and enterprise leaders. A clean search experience without the noise.
+
+        <p className="animate-fade-up stagger-2 mx-auto mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
+          Discover opportunities from fast-growing teams and enterprise leaders.
+          A clean search experience without the noise.
         </p>
 
         <form
           onSubmit={handleSearch}
-          className="mx-auto mt-8 flex max-w-2xl flex-col items-stretch gap-2 rounded-xl border border-border bg-card p-2 shadow-lg sm:flex-row sm:rounded-full"
+          className="animate-fade-up stagger-3 mx-auto mt-8 flex max-w-2xl flex-col items-stretch gap-0 overflow-hidden rounded-xl border border-border bg-card shadow-xl shadow-background/50 sm:flex-row"
         >
-          <div className="flex flex-1 items-center gap-2 border-b border-border px-3 py-2 sm:border-b-0 sm:border-r">
+          <div className="flex flex-1 items-center gap-2.5 border-b border-border px-4 py-3 sm:border-b-0 sm:border-r">
             <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
               type="text"
@@ -52,7 +61,7 @@ export function HeroSection() {
               className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
-          <div className="flex flex-1 items-center gap-2 px-3 py-2">
+          <div className="flex flex-1 items-center gap-2.5 px-4 py-3">
             <MapPin className="h-4 w-4 shrink-0 text-muted-foreground" />
             <input
               type="text"
@@ -64,13 +73,13 @@ export function HeroSection() {
           </div>
           <button
             type="submit"
-            className="rounded-xl bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-md sm:rounded-full"
+            className="bg-primary px-6 py-3 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 sm:px-8"
           >
             Search
           </button>
         </form>
 
-        <div className="mt-4 text-sm text-muted-foreground">
+        <div className="animate-fade-up stagger-4 mt-5 text-sm text-muted-foreground">
           Popular:{" "}
           {popular.map((term) => (
             <button
@@ -79,7 +88,7 @@ export function HeroSection() {
                 setQuery(term)
                 router.push(`/?query=${term}`)
               }}
-              className="mx-1 underline underline-offset-2 transition-colors hover:text-foreground"
+              className="mx-1 rounded-md border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
             >
               {term}
             </button>

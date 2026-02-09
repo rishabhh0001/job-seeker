@@ -25,46 +25,25 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get the job by slug
     const jobRows = await sql`
       SELECT id FROM jobs_job WHERE slug = ${jobSlug}
     `
 
     if (jobRows.length === 0) {
-      return NextResponse.json(
-        { error: "Job not found" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Job not found" }, { status: 404 })
     }
 
     const jobId = (jobRows[0] as { id: number }).id
 
-    // For now, create a simplified application
-    // In production, you'd want to:
-    // 1. Store the actual resume file
-    // 2. Extract text from PDF if uploaded
-    // 3. Parse JSON resume structure
-    // 4. Create user if not exists
-    const parsedText = resumeText || JSON.stringify(JSON.parse(resumeJson || "{}"), null, 2)
+    const parsedText =
+      resumeText ||
+      JSON.stringify(JSON.parse(resumeJson || "{}"), null, 2)
 
-    // Insert application (simplified - assumes user exists or creates guest application)
     const result = await sql`
       INSERT INTO jobs_application (
-        job_id,
-        applicant_id,
-        resume,
-        cover_letter,
-        parsed_text,
-        status,
-        applied_at
+        job_id, applicant_id, resume, cover_letter, parsed_text, status, applied_at
       ) VALUES (
-        ${jobId},
-        1,
-        ${applicantEmail},
-        ${coverLetter},
-        ${parsedText},
-        'Pending',
-        NOW()
+        ${jobId}, 1, ${applicantEmail}, ${coverLetter || ""}, ${parsedText}, 'Pending', NOW()
       )
       RETURNING id
     `
@@ -78,7 +57,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error("[v0] Application submission error:", error)
+    console.error("Application submission error:", error)
     return NextResponse.json(
       { error: "Failed to submit application" },
       { status: 500 }
@@ -98,7 +77,7 @@ export async function GET(request: NextRequest) {
     }
 
     const applications = await sql`
-      SELECT 
+      SELECT
         a.id,
         a.applicant_id,
         a.status,
@@ -113,7 +92,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ applications })
   } catch (error) {
-    console.error("[v0] Error fetching applications:", error)
+    console.error("Error fetching applications:", error)
     return NextResponse.json(
       { error: "Failed to fetch applications" },
       { status: 500 }

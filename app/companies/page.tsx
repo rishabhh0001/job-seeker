@@ -22,26 +22,35 @@ export default async function CompaniesPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-12">
-      <div className="mb-10 text-center">
+      <div className="animate-fade-up mb-10 text-center">
         <h1 className="font-heading text-3xl font-bold text-foreground md:text-4xl">
-          Top <span className="text-primary">Companies</span> Hiring Now
+          Top{" "}
+          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Companies
+          </span>{" "}
+          Hiring Now
         </h1>
         <p className="mt-2 text-muted-foreground">
           Discover employer pages and explore open opportunities.
         </p>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {employers.length > 0 ? (
-          employers.map((emp) => {
-            const initial = (emp.company_name || emp.username || "?")[0].toUpperCase()
+          employers.map((emp, i) => {
+            const initial = (
+              emp.company_name ||
+              emp.username ||
+              "?"
+            )[0].toUpperCase()
             return (
               <Link
                 key={emp.id}
                 href={`/companies/${emp.id}`}
-                className="group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+                className="animate-fade-up group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+                style={{ animationDelay: `${Math.min(i * 60, 300)}ms` }}
               >
-                <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-2xl font-bold text-primary-foreground">
+                <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-xl font-bold text-primary transition-transform duration-200 group-hover:scale-105">
                   {initial}
                 </div>
                 <h3 className="mt-4 font-heading text-lg font-bold text-foreground">
@@ -54,19 +63,25 @@ export default async function CompaniesPage() {
                 <hr className="my-4 w-full border-border" />
                 <div className="flex items-center gap-2">
                   <Briefcase className="h-4 w-4 text-primary" />
-                  <span className="text-lg font-bold text-primary">{emp.open_jobs ?? 0}</span>
-                  <span className="text-sm text-muted-foreground">Open Jobs</span>
+                  <span className="text-lg font-bold text-primary">
+                    {emp.open_jobs ?? 0}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    Open Jobs
+                  </span>
                 </div>
-                <div className="mt-4 w-full rounded-full border-2 border-primary px-4 py-2 text-sm font-semibold text-primary transition-all group-hover:bg-primary/5">
+                <div className="mt-4 w-full rounded-lg bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-all group-hover:bg-primary group-hover:text-primary-foreground">
                   View Company
                 </div>
               </Link>
             )
           })
         ) : (
-          <div className="col-span-full py-16 text-center">
-            <Building2 className="mx-auto h-12 w-12 text-muted-foreground/50" />
-            <h3 className="mt-4 text-lg text-muted-foreground">No companies found.</h3>
+          <div className="col-span-full animate-fade-in py-16 text-center">
+            <Building2 className="mx-auto h-12 w-12 text-muted-foreground/30" />
+            <h3 className="mt-4 text-lg text-muted-foreground">
+              No companies found.
+            </h3>
           </div>
         )}
       </div>

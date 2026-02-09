@@ -4,24 +4,31 @@
 
 @layer base {
   :root {
-    --background: 222 84% 5%;
-    --foreground: 213 97% 95%;
-    --card: 222 46% 11%;
-    --card-foreground: 213 97% 95%;
+    --background: 228 14% 7%;
+    --foreground: 210 40% 96%;
+    --card: 228 14% 10%;
+    --card-foreground: 210 40% 96%;
+    --popover: 228 14% 10%;
+    --popover-foreground: 210 40% 96%;
     --primary: 199 89% 48%;
-    --primary-foreground: 222 84% 5%;
-    --secondary: 222 47% 16%;
-    --secondary-foreground: 213 97% 95%;
-    --muted: 217 33% 44%;
-    --muted-foreground: 217 33% 55%;
-    --accent: 188 94% 42%;
-    --accent-foreground: 222 84% 5%;
-    --destructive: 0 84% 60%;
+    --primary-foreground: 228 14% 4%;
+    --secondary: 228 14% 14%;
+    --secondary-foreground: 210 40% 96%;
+    --muted: 228 14% 18%;
+    --muted-foreground: 215 20% 55%;
+    --accent: 172 66% 50%;
+    --accent-foreground: 228 14% 4%;
+    --destructive: 0 63% 58%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 33% 20%;
-    --input: 217 33% 17%;
+    --border: 228 14% 16%;
+    --input: 228 14% 14%;
     --ring: 199 89% 48%;
     --radius: 0.75rem;
+    --chart-1: 199 89% 48%;
+    --chart-2: 172 66% 50%;
+    --chart-3: 160 84% 39%;
+    --chart-4: 228 14% 40%;
+    --chart-5: 0 63% 58%;
   }
 }
 
@@ -32,4 +39,61 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  .animate-fade-up {
+    animation: fadeUp 0.5s ease-out forwards;
+  }
+  .animate-fade-down {
+    animation: fadeDown 0.4s ease-out forwards;
+  }
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+  .animate-slide-left {
+    animation: slideLeft 0.4s ease-out forwards;
+  }
+  .animate-slide-right {
+    animation: slideRight 0.4s ease-out forwards;
+  }
+  .stagger-1 { animation-delay: 50ms; }
+  .stagger-2 { animation-delay: 100ms; }
+  .stagger-3 { animation-delay: 150ms; }
+  .stagger-4 { animation-delay: 200ms; }
+  .stagger-5 { animation-delay: 250ms; }
+  .stagger-6 { animation-delay: 300ms; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Source_Sans_3, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { Navbar } from "@/components/navbar"
@@ -19,7 +19,11 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "JobPortal - Find Your Dream Job",
   description:
-    "Discover opportunities from fast-growing teams and enterprise leaders. A clean job search experience.",
+    "Discover opportunities from fast-growing teams and enterprise leaders. A modern job search experience.",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#0f1117",
 }
 
 export default function RootLayout({
@@ -28,8 +32,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={`${sourceSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+    <html lang="en" className="dark">
+      <body
+        className={`${sourceSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+      >
         <Navbar />
         <main className="min-h-screen pt-16">{children}</main>
         <Footer />

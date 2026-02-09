@@ -3,11 +3,14 @@ import { Building2, MapPin } from "lucide-react"
 import type { Job } from "@/lib/db"
 import { JOB_TYPE_LABELS, formatSalary, timeAgo } from "@/lib/db"
 
-export function JobCard({ job }: { job: Job }) {
+export function JobCard({ job, index = 0 }: { job: Job; index?: number }) {
   return (
-    <div className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg md:flex-row md:items-center">
+    <div
+      className="animate-fade-up group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 md:flex-row md:items-center"
+      style={{ animationDelay: `${Math.min(index * 60, 400)}ms` }}
+    >
       {/* Icon */}
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 text-primary">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         <Building2 className="h-5 w-5" />
       </div>
 
@@ -22,7 +25,7 @@ export function JobCard({ job }: { job: Job }) {
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
           <Link
             href={`/companies/${job.employer_id}`}
-            className="font-medium text-foreground transition-colors hover:text-primary"
+            className="font-medium text-foreground/80 transition-colors hover:text-primary"
           >
             {job.company_name || "Confidential"}
           </Link>
@@ -31,12 +34,12 @@ export function JobCard({ job }: { job: Job }) {
             {job.location}
           </span>
         </div>
-        <div className="mt-2 flex flex-wrap gap-2">
-          <span className="rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className="rounded-md bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
             {JOB_TYPE_LABELS[job.job_type] ?? job.job_type}
           </span>
           {job.category_name && (
-            <span className="rounded-lg border border-border px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
+            <span className="rounded-md bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground">
               {job.category_name}
             </span>
           )}
@@ -50,12 +53,14 @@ export function JobCard({ job }: { job: Job }) {
 
       {/* Right side */}
       <div className="flex shrink-0 flex-col items-end gap-2">
-        <span className="text-xs text-muted-foreground">{timeAgo(job.created_at)}</span>
+        <span className="text-xs text-muted-foreground">
+          {timeAgo(job.created_at)}
+        </span>
         <Link
           href={`/jobs/${job.slug}`}
-          className="rounded-full border-2 border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-all hover:bg-primary/5"
+          className="rounded-lg bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
         >
-          Apply Now
+          View Job
         </Link>
       </div>
     </div>

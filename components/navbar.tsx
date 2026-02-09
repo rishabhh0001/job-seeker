@@ -12,8 +12,8 @@ export function Navbar() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 50)
-    window.addEventListener("scroll", handler)
+    const handler = () => setScrolled(window.scrollY > 20)
+    window.addEventListener("scroll", handler, { passive: true })
     return () => window.removeEventListener("scroll", handler)
   }, [])
 
@@ -26,25 +26,34 @@ export function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed inset-x-0 top-0 z-50 border-b border-border/50 backdrop-blur-xl transition-all",
-        scrolled ? "bg-card/95 py-2 shadow-sm" : "bg-card/80 py-3"
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        scrolled
+          ? "border-b border-border/60 bg-background/80 py-2 shadow-lg shadow-background/20 backdrop-blur-xl"
+          : "bg-transparent py-3"
       )}
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2 font-heading text-xl font-bold text-foreground">
-          <Briefcase className="h-5 w-5 text-primary" />
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 font-heading text-xl font-bold text-foreground transition-opacity hover:opacity-80"
+        >
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Briefcase className="h-4 w-4" />
+          </div>
           Job<span className="text-primary">Portal</span>
         </Link>
 
         {/* Desktop */}
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-1 md:flex">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               className={cn(
-                "text-sm font-semibold transition-colors",
-                pathname === l.href ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                "relative rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200",
+                pathname === l.href
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
             >
               {l.label}
@@ -54,7 +63,7 @@ export function Navbar() {
 
         {/* Mobile toggle */}
         <button
-          className="rounded-lg p-2 text-muted-foreground md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground md:hidden"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -64,14 +73,16 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="border-t border-border bg-card px-4 py-4 md:hidden">
+        <div className="animate-fade-down border-t border-border bg-card/95 px-4 py-3 backdrop-blur-xl md:hidden">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               className={cn(
-                "block py-2 text-sm font-semibold",
-                pathname === l.href ? "text-foreground" : "text-muted-foreground"
+                "block rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors",
+                pathname === l.href
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
               onClick={() => setOpen(false)}
             >

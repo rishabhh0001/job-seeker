@@ -17,7 +17,11 @@ async function getCategories(): Promise<Category[]> {
   return rows as Category[]
 }
 
-async function getJobs(query?: string, location?: string, category?: string): Promise<Job[]> {
+async function getJobs(
+  query?: string,
+  location?: string,
+  category?: string
+): Promise<Job[]> {
   let baseQuery = `
     SELECT j.*, u.company_name, u.username AS employer_username,
            c.name AS category_name, c.slug AS category_slug
@@ -32,7 +36,9 @@ async function getJobs(query?: string, location?: string, category?: string): Pr
   if (query) {
     params.push(`%${query}%`)
     const i = params.length
-    conditions.push(`(j.title ILIKE $${i} OR j.description ILIKE $${i} OR u.company_name ILIKE $${i})`)
+    conditions.push(
+      `(j.title ILIKE $${i} OR j.description ILIKE $${i} OR u.company_name ILIKE $${i})`
+    )
   }
   if (location) {
     params.push(`%${location}%`)
@@ -56,7 +62,11 @@ async function getJobs(query?: string, location?: string, category?: string): Pr
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ query?: string; location?: string; category?: string }>
+  searchParams: Promise<{
+    query?: string
+    location?: string
+    category?: string
+  }>
 }) {
   const params = await searchParams
   const [categories, jobs] = await Promise.all([
@@ -72,20 +82,27 @@ export default async function HomePage({
 
       <CategoryCards categories={categories} />
 
-      <section className="mx-auto max-w-6xl px-4 pb-16">
+      <section className="mx-auto max-w-6xl px-4 pb-20">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="font-heading text-2xl font-bold text-foreground">
-            Latest <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Jobs</span>
+            Latest{" "}
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Jobs
+            </span>
           </h2>
-          <span className="text-sm text-muted-foreground">{jobs.length} jobs found</span>
+          <span className="rounded-md bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+            {jobs.length} found
+          </span>
         </div>
 
         <div className="flex flex-col gap-3">
           {jobs.length > 0 ? (
-            jobs.map((job) => <JobCard key={job.id} job={job} />)
+            jobs.map((job, i) => <JobCard key={job.id} job={job} index={i} />)
           ) : (
-            <div className="py-16 text-center">
-              <p className="text-muted-foreground">No jobs found matching your criteria.</p>
+            <div className="animate-fade-in rounded-xl border border-border bg-card py-20 text-center">
+              <p className="text-muted-foreground">
+                No jobs found matching your criteria.
+              </p>
             </div>
           )}
         </div>

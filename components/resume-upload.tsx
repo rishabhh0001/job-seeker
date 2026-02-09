@@ -33,69 +33,44 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
 
     try {
       const fileExt = file.name.split(".").pop()?.toLowerCase()
-      let fileType: "pdf" | "json" | "text" = "text"
 
-      if (fileExt === "pdf") fileType = "pdf"
-      else if (fileExt === "json") fileType = "json"
-
-      // For PDF files, extract text on the client side
-      if (fileType === "pdf") {
-        await extractPdfText(file)
-      } else {
-        // For JSON and text files, read directly
+      if (fileExt === "pdf") {
         const text = await file.text()
-
-        if (fileType === "json") {
-          try {
-            const jsonData = JSON.parse(text)
-            const data = {
-              type: "json" as const,
-              data: jsonData,
-              text: JSON.stringify(jsonData, null, 2),
-              fileName: file.name,
-            }
-            setResumeData(data)
-            onResumeLoad(data)
-            onResumeParsed?.(JSON.stringify(jsonData, null, 2))
-          } catch (e) {
-            setError("Invalid JSON format. Please check your file.")
-          }
-        } else {
-          const data = {
-            type: "text" as const,
-            text: text,
-            fileName: file.name,
-          }
-          setResumeData(data)
-          onResumeLoad(data)
-          onResumeParsed?.(text)
+        const data: ResumeData = {
+          type: "pdf",
+          text: text.substring(0, 5000),
+          fileName: file.name,
         }
+        setResumeData(data)
+        onResumeLoad(data)
+        onResumeParsed?.(text)
+      } else if (fileExt === "json") {
+        const text = await file.text()
+        const jsonData = JSON.parse(text)
+        const data: ResumeData = {
+          type: "json",
+          data: jsonData,
+          text: JSON.stringify(jsonData, null, 2),
+          fileName: file.name,
+        }
+        setResumeData(data)
+        onResumeLoad(data)
+        onResumeParsed?.(JSON.stringify(jsonData, null, 2))
+      } else {
+        const text = await file.text()
+        const data: ResumeData = {
+          type: "text",
+          text,
+          fileName: file.name,
+        }
+        setResumeData(data)
+        onResumeLoad(data)
+        onResumeParsed?.(text)
       }
-    } catch (err) {
-      setError(`Failed to process file: ${err instanceof Error ? err.message : "Unknown error"}`)
+    } catch {
+      setError("Failed to process file. Please check the format and try again.")
     } finally {
       setLoading(false)
-    }
-  }
-
-  const extractPdfText = async (file: File) => {
-    try {
-      // Use a simple approach: convert PDF to base64 and send to backend
-      // Or use a library like pdfjs-dist for client-side parsing
-      const text = await file.text()
-
-      // For a real implementation, you'd use pdfjs or similar
-      // This is a simplified version that attempts text extraction
-      const data = {
-        type: "pdf" as const,
-        text: text.substring(0, 5000), // Get first 5000 chars as approximation
-        fileName: file.name,
-      }
-      setResumeData(data)
-      onResumeLoad(data)
-      onResumeParsed?.(text)
-    } catch (err) {
-      setError("Failed to extract text from PDF. Please try a JSON or text format.")
     }
   }
 
@@ -105,11 +80,10 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
       setError("Please enter JSON resume data")
       return
     }
-
     try {
       const jsonData = JSON.parse(jsonText)
-      const data = {
-        type: "json" as const,
+      const data: ResumeData = {
+        type: "json",
         data: jsonData,
         text: JSON.stringify(jsonData, null, 2),
       }
@@ -117,7 +91,7 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
       onResumeLoad(data)
       onResumeParsed?.(jsonText)
       setError(null)
-    } catch (e) {
+    } catch {
       setError("Invalid JSON format")
     }
   }
@@ -128,44 +102,43 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
       setError("Please enter resume content")
       return
     }
-
-    const data = {
-      type: "manual" as const,
-      text: manualText,
-    }
+    const data: ResumeData = { type: "manual", text: manualText }
     setResumeData(data)
     onResumeLoad(data)
     onResumeParsed?.(manualText)
     setError(null)
   }
 
-  return (
-    <div className="w-full rounded-lg border border-border bg-secondary/30 p-6">
-      <h3 className="mb-4 font-heading text-lg font-bold text-foreground">Upload Your Resume</h3>
+  const tabs = [
+    { key: "file" as const, label: "Upload File", icon: Upload },
+    { key: "json" as const, label: "JSON Resume", icon: FileJson },
+    { key: "manual" as const, label: "Manual Input", icon: FileText },
+  ]
 
-      {/* Tab Navigation */}
-      <div className="mb-6 flex gap-2 border-b border-border">
-        {(["file", "json", "manual"] as const).map((tab) => (
+  return (
+    <div className="w-full rounded-xl border border-border bg-secondary/30 p-5">
+      {/* Tabs */}
+      <div className="mb-5 flex gap-1 rounded-lg bg-muted/50 p-1">
+        {tabs.map((tab) => (
           <button
-            key={tab}
-            onClick={() => setUploadTab(tab)}
-            className={`px-4 py-2 text-sm font-medium transition-colors ${
-              uploadTab === tab
-                ? "border-b-2 border-primary text-primary"
+            key={tab.key}
+            onClick={() => setUploadTab(tab.key)}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-medium transition-all ${
+              uploadTab === tab.key
+                ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {tab === "file" && "Upload File"}
-            {tab === "json" && "JSON Resume"}
-            {tab === "manual" && "Manual Input"}
+            <tab.icon className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{tab.label}</span>
           </button>
         ))}
       </div>
 
-      {/* File Upload Tab */}
+      {/* File Upload */}
       {uploadTab === "file" && (
         <div
-          className="rounded-lg border-2 border-dashed border-primary/30 p-8 text-center transition-colors hover:border-primary hover:bg-primary/10 cursor-pointer"
+          className="cursor-pointer rounded-lg border-2 border-dashed border-border p-8 text-center transition-all hover:border-primary/40 hover:bg-primary/5"
           onClick={() => fileInputRef.current?.click()}
         >
           <input
@@ -178,83 +151,71 @@ export function ResumeUpload({ onResumeLoad, onResumeParsed }: ResumeUploadProps
           />
           <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
           <p className="mt-2 text-sm font-medium text-foreground">
-            Click to upload or drag and drop
+            {loading ? "Processing..." : "Click to upload or drag and drop"}
           </p>
-          <p className="text-xs text-muted-foreground">
+          <p className="mt-1 text-xs text-muted-foreground">
             PDF, JSON, or TXT files (max 10MB)
           </p>
         </div>
       )}
 
-      {/* JSON Resume Tab */}
+      {/* JSON Input */}
       {uploadTab === "json" && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <textarea
             ref={jsonInputRef}
-            placeholder={`{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "phone": "+1-234-567-8900",
-  "experience": [
-    {
-      "company": "Tech Corp",
-      "position": "Software Engineer",
-      "duration": "2020-2024"
-    }
-  ]
-}`}
-            className="min-h-64 w-full rounded-lg border border-border bg-input p-3 font-mono text-sm text-foreground placeholder-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all"
+            placeholder={`{\n  "name": "John Doe",\n  "email": "john@example.com",\n  "experience": [...]\n}`}
+            className="min-h-48 w-full rounded-lg border border-border bg-input p-3 font-mono text-sm text-foreground placeholder-muted-foreground transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <button
             onClick={handleJsonInput}
             disabled={loading}
-            className="rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:shadow-md disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
           >
-            {loading ? "Processing..." : "Parse JSON Resume"}
+            Parse JSON Resume
           </button>
         </div>
       )}
 
-      {/* Manual Input Tab */}
+      {/* Manual Input */}
       {uploadTab === "manual" && (
-        <div className="space-y-4">
+        <div className="space-y-3">
           <textarea
             ref={manualInputRef}
             placeholder="Paste your resume content here. Include experience, skills, education, etc."
-            className="min-h-64 w-full rounded-lg border border-border bg-background p-3 placeholder-muted-foreground"
+            className="min-h-48 w-full rounded-lg border border-border bg-input p-3 text-sm text-foreground placeholder-muted-foreground transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <button
             onClick={handleManualInput}
             disabled={loading}
-            className="rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:shadow-md disabled:opacity-50"
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50"
           >
-            {loading ? "Processing..." : "Submit Resume"}
+            Submit Resume
           </button>
         </div>
       )}
 
-      {/* Error Message */}
+      {/* Feedback */}
       {error && (
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+        <div className="animate-scale-in mt-4 flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </div>
       )}
 
-      {/* Success Message */}
       {resumeData && !error && (
-        <div className="mt-4 flex items-center gap-2 rounded-lg border border-green-500/20 bg-green-500/5 p-3 text-sm text-green-600">
+        <div className="animate-scale-in mt-4 flex items-center gap-2 rounded-lg border border-accent/20 bg-accent/5 p-3 text-sm text-accent">
           <CheckCircle className="h-4 w-4 shrink-0" />
-          Resume loaded successfully
-          {resumeData.fileName && ` (${resumeData.fileName})`}
+          Resume loaded{resumeData.fileName ? ` (${resumeData.fileName})` : ""}
         </div>
       )}
 
-      {/* Resume Preview */}
       {resumeData && (
-        <div className="mt-6 rounded-lg border border-border bg-secondary/50 p-4">
-          <h4 className="mb-2 text-sm font-semibold text-foreground">Resume Preview</h4>
-          <div className="max-h-48 overflow-y-auto whitespace-pre-wrap rounded bg-input p-3 text-xs text-muted-foreground">
+        <div className="animate-fade-in mt-4 rounded-lg border border-border bg-card p-4">
+          <h4 className="mb-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            Preview
+          </h4>
+          <div className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-md bg-input p-3 font-mono text-xs text-muted-foreground">
             {resumeData.data
               ? JSON.stringify(resumeData.data, null, 2)
               : resumeData.text?.substring(0, 2000) || ""}

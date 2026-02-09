@@ -47,22 +47,32 @@ export default async function CompanyDetailPage({
 
   if (!company) notFound()
 
-  const initial = (company.company_name || company.username || "?")[0].toUpperCase()
+  const initial = (
+    company.company_name ||
+    company.username ||
+    "?"
+  )[0].toUpperCase()
+
+  const stats = [
+    { label: "Open Positions", value: company.open_jobs ?? 0, color: "text-primary" },
+    { label: "Total Jobs", value: company.total_jobs ?? 0, color: "text-foreground" },
+    { label: "Hiring Status", value: "Active", color: "text-accent" },
+  ]
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <Link
         href="/companies"
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        className="animate-fade-in mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to companies
       </Link>
 
       {/* Company hero */}
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="animate-fade-up rounded-xl border border-border bg-card p-6">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-2xl font-bold text-primary-foreground">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-2xl font-bold text-primary">
             {initial}
           </div>
           <div className="text-center sm:text-left">
@@ -86,19 +96,18 @@ export default async function CompanyDetailPage({
           </div>
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-border bg-muted/50 p-4 text-center">
-            <p className="font-heading text-2xl font-bold text-primary">{company.open_jobs ?? 0}</p>
-            <p className="text-xs text-muted-foreground">Open Positions</p>
-          </div>
-          <div className="rounded-xl border border-border bg-muted/50 p-4 text-center">
-            <p className="font-heading text-2xl font-bold text-primary">{company.total_jobs ?? 0}</p>
-            <p className="text-xs text-muted-foreground">Total Jobs</p>
-          </div>
-          <div className="col-span-2 rounded-xl border border-border bg-muted/50 p-4 text-center sm:col-span-1">
-            <p className="font-heading text-2xl font-bold text-accent">Active</p>
-            <p className="text-xs text-muted-foreground">Hiring Status</p>
-          </div>
+        <div className="mt-6 grid grid-cols-3 gap-3">
+          {stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="rounded-lg border border-border bg-secondary/50 p-4 text-center"
+            >
+              <p className={`font-heading text-2xl font-bold ${stat.color}`}>
+                {stat.value}
+              </p>
+              <p className="text-xs text-muted-foreground">{stat.label}</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -109,10 +118,12 @@ export default async function CompanyDetailPage({
         </h2>
         <div className="flex flex-col gap-3">
           {jobs.length > 0 ? (
-            jobs.map((job) => <JobCard key={job.id} job={job} />)
+            jobs.map((job, i) => <JobCard key={job.id} job={job} index={i} />)
           ) : (
-            <div className="py-12 text-center">
-              <p className="text-muted-foreground">No open positions at this time.</p>
+            <div className="animate-fade-in rounded-xl border border-border bg-card py-12 text-center">
+              <p className="text-muted-foreground">
+                No open positions at this time.
+              </p>
             </div>
           )}
         </div>
