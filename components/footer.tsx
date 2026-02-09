@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Briefcase, Check, Loader2 } from "lucide-react"
 import { useState } from "react"
@@ -118,8 +120,8 @@ export function Footer() {
                 type="submit"
                 disabled={status === "loading" || status === "success"}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors ${status === "success"
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-primary hover:bg-primary/90"
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-primary hover:bg-primary/90"
                   } disabled:opacity-70`}
               >
                 {status === "loading" ? (
