@@ -3,10 +3,6 @@
   "buildCommand": "pnpm run build",
   "rewrites": [
     {
-      "source": "/admin/:path*",
-      "destination": "/api/index.py"
-    },
-    {
       "source": "/accounts/:path*",
       "destination": "/api/index.py"
     }
