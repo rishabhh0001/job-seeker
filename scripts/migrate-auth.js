@@ -4,9 +4,9 @@ require("dotenv").config()
 const sql = neon(process.env.DATABASE_URL)
 
 async function migrate() {
-    console.log("Creating Better Auth tables...")
+  console.log("Creating Better Auth tables...")
 
-    await sql`
+  await sql`
     CREATE TABLE IF NOT EXISTS "user" (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -18,9 +18,9 @@ async function migrate() {
       "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `
-    console.log("  ✓ user table created")
+  console.log("  ✓ user table")
 
-    await sql`
+  await sql`
     CREATE TABLE IF NOT EXISTS "session" (
       id TEXT PRIMARY KEY,
       "expiresAt" TIMESTAMP NOT NULL,
@@ -32,9 +32,9 @@ async function migrate() {
       "userId" TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE
     )
   `
-    console.log("  ✓ session table created")
+  console.log("  ✓ session table")
 
-    await sql`
+  await sql`
     CREATE TABLE IF NOT EXISTS "account" (
       id TEXT PRIMARY KEY,
       "accountId" TEXT NOT NULL,
@@ -51,9 +51,9 @@ async function migrate() {
       "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )
   `
-    console.log("  ✓ account table created")
+  console.log("  ✓ account table")
 
-    await sql`
+  await sql`
     CREATE TABLE IF NOT EXISTS "verification" (
       id TEXT PRIMARY KEY,
       identifier TEXT NOT NULL,
@@ -63,12 +63,28 @@ async function migrate() {
       "updatedAt" TIMESTAMP
     )
   `
-    console.log("  ✓ verification table created")
+  console.log("  ✓ verification table")
 
-    console.log("\n✅ All Better Auth tables created successfully!")
+  await sql`
+    CREATE TABLE IF NOT EXISTS "passkey" (
+      id TEXT PRIMARY KEY,
+      name TEXT,
+      "publicKey" TEXT NOT NULL,
+      "userId" TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
+      "webauthnUserID" TEXT NOT NULL,
+      counter INTEGER NOT NULL DEFAULT 0,
+      "deviceType" TEXT NOT NULL,
+      "backedUp" BOOLEAN NOT NULL DEFAULT FALSE,
+      transports TEXT,
+      "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `
+  console.log("  ✓ passkey table")
+
+  console.log("\n✅ All tables created successfully!")
 }
 
 migrate().catch((err) => {
-    console.error("Migration failed:", err)
-    process.exit(1)
+  console.error("Migration failed:", err)
+  process.exit(1)
 })
