@@ -1,35 +1,10 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "build_files.sh",
-            "use": "@vercel/static-build",
-            "config": {
-                "distDir": "staticfiles"
-            }
-        },
-        {
-            "src": "api/index.py",
-            "use": "@vercel/python",
-            "config": {
-                "runtime": "python3.12",
-                "maxDuration": 30,
-                "memory": 1024
-            }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/static/(.*)",
-            "dest": "/staticfiles/$1"
-        },
-        {
-            "src": "/favicon.ico",
-            "dest": "/staticfiles/favicon.ico"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.py"
-        }
-    ]
+  "framework": "nextjs",
+  "buildCommand": "pnpm run build",
+  "rewrites": [
+    {
+      "source": "/accounts/:path*",
+      "destination": "/api/index.py"
+    }
+  ]
 }

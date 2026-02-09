@@ -1,0 +1,77 @@
+{
+  "name": "Sarah Johnson",
+  "email": "sarah.johnson@email.com",
+  "phone": "+1-555-123-4567",
+  "location": "San Francisco, CA",
+  "professional_summary": "Full-stack developer with 5+ years of experience building scalable web applications. Passionate about clean code, user experience, and continuous learning.",
+  "experience": [
+    {
+      "company": "Tech Innovations Inc.",
+      "position": "Senior Software Engineer",
+      "duration": "2021-Present",
+      "responsibilities": [
+        "Led development of microservices architecture using Node.js and PostgreSQL",
+        "Mentored junior developers and conducted code reviews",
+        "Reduced API response time by 40% through optimization"
+      ]
+    },
+    {
+      "company": "Digital Solutions LLC",
+      "position": "Full-Stack Developer",
+      "duration": "2019-2021",
+      "responsibilities": [
+        "Developed React.js frontend applications with TypeScript",
+        "Built RESTful APIs using Express.js",
+        "Implemented automated testing with Jest and React Testing Library"
+      ]
+    },
+    {
+      "company": "StartupXYZ",
+      "position": "Junior Developer",
+      "duration": "2018-2019",
+      "responsibilities": [
+        "Assisted in building web applications",
+        "Contributed to bug fixes and feature development",
+        "Participated in agile development practices"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "University of California",
+      "degree": "Bachelor of Science",
+      "field": "Computer Science",
+      "year": 2018
+    },
+    {
+      "institution": "Online Learning Platform",
+      "certification": "Full-Stack Web Development Bootcamp",
+      "year": 2017
+    }
+  ],
+  "skills": [
+    "JavaScript/TypeScript",
+    "React.js",
+    "Node.js",
+    "PostgreSQL",
+    "MongoDB",
+    "Docker",
+    "AWS",
+    "Git",
+    "REST APIs",
+    "GraphQL",
+    "HTML/CSS",
+    "Agile/Scrum"
+  ],
+  "certifications": [
+    "AWS Certified Solutions Architect - Associate",
+    "Google Cloud Professional Cloud Architect"
+  ],
+  "languages": [
+    "English (Native)",
+    "Spanish (Fluent)"
+  ],
+  "portfolio": "https://sarahjohnson.dev",
+  "github": "https://github.com/sarahjohnson",
+  "linkedin": "https://linkedin.com/in/sarahjohnson"
+}
