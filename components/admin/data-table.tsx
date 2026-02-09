@@ -66,8 +66,56 @@ export function DataTable<T extends Record<string, any>>({
         onSelectionChange?.(newSelection)
     }
 
+    const handleExport = () => {
+        if (!data.length) return
+
+        const headers = columns.map((col) => col.label).join(",")
+        const rows = data.map((row) =>
+            columns
+                .map((col) => {
+                    const value = row[col.key as keyof typeof row]
+                    return typeof value === "string" ? `"${value.replace(/"/g, '""')}"` : value
+                })
+                .join(",")
+        )
+
+        const csvContent = [headers, ...rows].join("\n")
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+        const link = document.createElement("a")
+        const url = URL.createObjectURL(blob)
+        link.setAttribute("href", url)
+        link.setAttribute("download", "export.csv")
+        link.style.visibility = "hidden"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
     return (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
+            <div className="flex items-center justify-end p-2 border-b border-border bg-secondary/30">
+                <button
+                    onClick={handleExport}
+                    className="text-xs font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-muted"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Export CSV
+                </button>
+            </div>
             <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead>

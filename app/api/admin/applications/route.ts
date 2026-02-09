@@ -62,7 +62,7 @@ export async function PUT(request: NextRequest) {
             )
         }
 
-        const validStatuses = ["Pending", "Reviewed", "Accepted", "Rejected"]
+        const validStatuses = ["Pending", "Review", "Reviewed", "Accepted", "Rejected"]
         if (!validStatuses.includes(status)) {
             return NextResponse.json({ error: "Invalid status" }, { status: 400 })
         }

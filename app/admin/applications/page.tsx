@@ -129,7 +129,7 @@ export default function ApplicationsAdminPage() {
     const statusStyles: Record<string, string> = {
         Accepted: "bg-accent/10 text-accent",
         Rejected: "bg-destructive/10 text-destructive",
-        Reviewed: "bg-primary/10 text-primary",
+        Review: "bg-primary/10 text-primary",
         Pending: "bg-muted text-muted-foreground",
     }
 
@@ -231,7 +231,7 @@ export default function ApplicationsAdminPage() {
                 >
                     <option value="all">All Status</option>
                     <option value="Pending">Pending</option>
-                    <option value="Reviewed">Reviewed</option>
+                    <option value="Review">Under Review</option>
                     <option value="Accepted">Accepted</option>
                     <option value="Rejected">Rejected</option>
                 </select>
@@ -271,8 +271,8 @@ export default function ApplicationsAdminPage() {
                         variant: "destructive",
                     },
                     {
-                        label: "Mark Reviewed",
-                        onClick: () => handleBulkStatusUpdate("Reviewed"),
+                        label: "Under Review",
+                        onClick: () => handleBulkStatusUpdate("Review"),
                     },
                     {
                         label: "Delete",
@@ -362,12 +362,12 @@ export default function ApplicationsAdminPage() {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        handleUpdateStatus(viewingApplication.id, "Reviewed")
+                                        handleUpdateStatus(viewingApplication.id, "Review")
                                         setViewingApplication(null)
                                     }}
                                     className="rounded-md bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20"
                                 >
-                                    Mark Reviewed
+                                    Under Review
                                 </button>
                             </div>
                         </div>

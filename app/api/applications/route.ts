@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
     const coverLetter = formData.get("coverLetter") as string
     const resumeText = formData.get("resumeText") as string
     const resumeJson = formData.get("resumeJson") as string
+    const resumeFile = formData.get("resumeFile") as File | null
 
     console.log("Application submission attempt:", { jobSlug, applicantEmail, applicantName })
 
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!resumeText && !resumeJson) {
+    if (!resumeText && !resumeJson && !resumeFile) {
       return NextResponse.json(
         { error: "Resume is required" },
         { status: 400 }
@@ -63,9 +64,27 @@ export async function POST(request: NextRequest) {
       console.log("Created new user:", applicantId)
     }
 
-    const parsedText =
-      resumeText ||
-      JSON.stringify(JSON.parse(resumeJson || "{}"), null, 2)
+    let parsedText = ""
+
+    // Handle PDF file upload
+    if (resumeFile && resumeFile.name.toLowerCase().endsWith('.pdf')) {
+      try {
+        const arrayBuffer = await resumeFile.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+        const pdfParse = (await import('pdf-parse')).default
+        const data = await pdfParse(buffer)
+        parsedText = data.text
+        console.log("Successfully parsed PDF resume")
+      } catch (error) {
+        console.error("Error parsing PDF:", error)
+        // Fallback or just log error? We'll continue but log it.
+        parsedText = "Error parsing PDF resume. Please contact the applicant."
+      }
+    } else {
+      parsedText =
+        resumeText ||
+        JSON.stringify(JSON.parse(resumeJson || "{}"), null, 2)
+    }
 
     // Store resume as empty string for now (file upload will be handled separately)
     // The resume field in Django expects a file path, not the content

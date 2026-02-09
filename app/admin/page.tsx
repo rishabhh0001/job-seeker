@@ -1,140 +1,284 @@
-import { sql } from "@/lib/db"
+"use client"
+
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { Briefcase, Users, Building2, FolderKanban, ArrowLeft } from "lucide-react"
+import {
+    Briefcase,
+    FileText,
+    Users,
+    Building2,
+    TrendingUp,
+    Activity
+} from "lucide-react"
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    BarChart,
+    Bar,
+    Cell
+} from "recharts"
 
-type AdminStats = {
-    totalJobs: number
-    totalApplications: number
-    totalUsers: number
-    totalCategories: number
+type DashboardStats = {
+    active_jobs: number
+    total_applications: number
+    total_employers: number
+    total_seekers: number
 }
 
-async function getAdminStats(): Promise<AdminStats> {
-    const [jobs, applications, users, categories] = await Promise.all([
-        sql`SELECT COUNT(*) as count FROM jobs_job`,
-        sql`SELECT COUNT(*) as count FROM jobs_application`,
-        sql`SELECT COUNT(*) as count FROM jobs_user`,
-        sql`SELECT COUNT(*) as count FROM jobs_category`,
-    ])
+type TrendData = {
+    date: string
+    count: number
+}
 
-    return {
-        totalJobs: Number((jobs[0] as { count: number }).count),
-        totalApplications: Number((applications[0] as { count: number }).count),
-        totalUsers: Number((users[0] as { count: number }).count),
-        totalCategories: Number((categories[0] as { count: number }).count),
+type DistributionData = {
+    name: string
+    count: number
+}
+
+type ActivityItem = {
+    type: string
+    id: number
+    user: string
+    target: string
+    time: string
+}
+
+export default function AdminDashboard() {
+    const [stats, setStats] = useState<DashboardStats | null>(null)
+    const [trend, setTrend] = useState<TrendData[]>([])
+    const [distribution, setDistribution] = useState<DistributionData[]>([])
+    const [activity, setActivity] = useState<ActivityItem[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        async function fetchStats() {
+            try {
+                const res = await fetch("/api/admin/stats")
+                const data = await res.json()
+                setStats(data.stats)
+                setTrend(data.trend)
+                setDistribution(data.distribution)
+                setActivity(data.activity)
+            } catch (error) {
+                console.error("Failed to fetch stats:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchStats()
+    }, [])
+
+    if (loading) {
+        return (
+            <div className="flex h-64 items-center justify-center">
+                <div className="text-muted-foreground">Loading dashboard...</div>
+            </div>
+        )
     }
-}
 
-export default async function AdminPage() {
-    const stats = await getAdminStats()
-
-    const adminSections = [
+    const statCards = [
         {
-            title: "Jobs",
-            description: "Manage job listings",
+            title: "Active Jobs",
+            value: stats?.active_jobs || 0,
             icon: Briefcase,
-            count: stats.totalJobs,
-            href: "/admin/jobs",
             color: "text-blue-500",
             bgColor: "bg-blue-500/10",
+            href: "/admin/jobs",
         },
         {
-            title: "Applications",
-            description: "Review job applications",
-            icon: Users,
-            count: stats.totalApplications,
-            href: "/admin/applications",
-            color: "text-green-500",
-            bgColor: "bg-green-500/10",
-        },
-        {
-            title: "Users",
-            description: "Manage users and employers",
-            icon: Building2,
-            count: stats.totalUsers,
-            href: "/admin/users",
+            title: "Total Applications",
+            value: stats?.total_applications || 0,
+            icon: FileText,
             color: "text-purple-500",
             bgColor: "bg-purple-500/10",
+            href: "/admin/applications",
         },
         {
-            title: "Categories",
-            description: "Manage job categories",
-            icon: FolderKanban,
-            count: stats.totalCategories,
-            href: "/admin/categories",
+            title: "Employers",
+            value: stats?.total_employers || 0,
+            icon: Building2,
             color: "text-orange-500",
             bgColor: "bg-orange-500/10",
+            href: "/admin/users?type=employer",
+        },
+        {
+            title: "Job Seekers",
+            value: stats?.total_seekers || 0,
+            icon: Users,
+            color: "text-green-500",
+            bgColor: "bg-green-500/10",
+            href: "/admin/users?type=seeker",
         },
     ]
 
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+
     return (
-        <div className="mx-auto max-w-6xl px-4 py-8">
-            <div className="mb-8">
-                <Link
-                    href="/"
-                    className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Home
-                </Link>
+        <div className="space-y-8">
+            <div>
                 <h1 className="font-heading text-3xl font-bold text-foreground">
-                    Admin{" "}
-                    <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                        Panel
-                    </span>
+                    Dashboard
                 </h1>
                 <p className="mt-2 text-muted-foreground">
-                    Manage your job portal content and users
+                    Overview of your job portal's performance
                 </p>
             </div>
 
+            {/* Stat Cards */}
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {adminSections.map((section) => (
+                {statCards.map((stat) => (
                     <Link
-                        key={section.title}
-                        href={section.href}
+                        key={stat.title}
+                        href={stat.href}
                         className="group relative overflow-hidden rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5"
                     >
-                        <div className="mb-4 flex items-center justify-between">
-                            <div className={`rounded-lg ${section.bgColor} p-3 ${section.color}`}>
-                                <section.icon className="h-6 w-6" />
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-muted-foreground">
+                                    {stat.title}
+                                </p>
+                                <div className="mt-2 flex items-baseline gap-2">
+                                    <span className="text-3xl font-bold text-foreground">
+                                        {stat.value}
+                                    </span>
+                                </div>
                             </div>
-                            <span className="text-3xl font-bold text-foreground">
-                                {section.count}
-                            </span>
+                            <div className={`rounded-full p-3 ${stat.bgColor}`}>
+                                <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                            </div>
                         </div>
-                        <h2 className="mb-1 font-heading text-lg font-bold text-foreground">
-                            {section.title}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">{section.description}</p>
-                        <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-primary to-accent opacity-0 transition-opacity group-hover:opacity-100" />
                     </Link>
                 ))}
             </div>
 
-            <div className="mt-12 rounded-xl border border-border bg-card p-6">
-                <h2 className="mb-4 font-heading text-xl font-bold text-foreground">
-                    Quick Actions
-                </h2>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    <Link
-                        href="/dashboard"
-                        className="rounded-lg border border-border bg-secondary/30 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                    >
-                        View Dashboard
-                    </Link>
-                    <Link
-                        href="/"
-                        className="rounded-lg border border-border bg-secondary/30 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                    >
-                        Browse Jobs
-                    </Link>
-                    <Link
-                        href="/companies"
-                        className="rounded-lg border border-border bg-secondary/30 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                    >
-                        View Companies
-                    </Link>
+            <div className="grid gap-6 lg:grid-cols-2">
+                {/* Application Trend Chart */}
+                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                    <div className="mb-6 flex items-center gap-2">
+                        <div className="rounded-lg bg-primary/10 p-2">
+                            <TrendingUp className="h-5 w-5 text-primary" />
+                        </div>
+                        <h3 className="font-heading text-lg font-bold text-foreground">
+                            Application Trends
+                        </h3>
+                    </div>
+                    <div className="h-64 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={trend}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                                <XAxis
+                                    dataKey="date"
+                                    stroke="#888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <YAxis
+                                    stroke="#888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', borderRadius: '8px' }}
+                                    itemStyle={{ color: '#fff' }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="count"
+                                    stroke="#3b82f6"
+                                    strokeWidth={2}
+                                    dot={{ fill: '#3b82f6', r: 4 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                {/* Jobs by Category Chart */}
+                <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                    <div className="mb-6 flex items-center gap-2">
+                        <div className="rounded-lg bg-orange-500/10 p-2">
+                            <Briefcase className="h-5 w-5 text-orange-500" />
+                        </div>
+                        <h3 className="font-heading text-lg font-bold text-foreground">
+                            Jobs by Category
+                        </h3>
+                    </div>
+                    <div className="h-64 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={distribution}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                                <XAxis
+                                    dataKey="name"
+                                    stroke="#888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <YAxis
+                                    stroke="#888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', borderRadius: '8px' }}
+                                    itemStyle={{ color: '#fff' }}
+                                />
+                                <Bar dataKey="count" fill="#8884d8" radius={[4, 4, 0, 0]}>
+                                    {distribution.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            </div>
+
+            {/* Recent Activity Feed */}
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+                <div className="mb-6 flex items-center gap-2">
+                    <div className="rounded-lg bg-green-500/10 p-2">
+                        <Activity className="h-5 w-5 text-green-500" />
+                    </div>
+                    <h3 className="font-heading text-lg font-bold text-foreground">
+                        Recent Activity
+                    </h3>
+                </div>
+                <div className="space-y-4">
+                    {activity.map((item, index) => (
+                        <div
+                            key={index}
+                            className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="h-10 w-10 overflow-hidden rounded-full bg-muted flex items-center justify-center">
+                                    <Users className="h-5 w-5 text-muted-foreground" />
+                                </div>
+                                <div>
+                                    <p className="text-sm font-medium text-foreground">
+                                        <span className="font-bold">{item.user}</span> applied for{" "}
+                                        <span className="font-bold text-primary">{item.target}</span>
+                                    </p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {new Date(item.time).toLocaleString()}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                    {activity.length === 0 && (
+                        <p className="text-center text-muted-foreground">No recent activity</p>
+                    )}
                 </div>
             </div>
         </div>
