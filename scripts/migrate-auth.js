@@ -94,6 +94,7 @@ async function migrate() {
       "deviceType" TEXT NOT NULL,
       "backedUp" BOOLEAN NOT NULL DEFAULT FALSE,
       transports TEXT,
+      "credentialID" TEXT,
       "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `
