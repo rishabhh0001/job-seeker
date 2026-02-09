@@ -58,6 +58,23 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     console.error("Application submission error:", error)
+
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("DATABASE_URL")) {
+        return NextResponse.json(
+          { error: "Database configuration error. Please contact support." },
+          { status: 500 }
+        )
+      }
+      if (error.message.includes("connect") || error.message.includes("ECONNREFUSED")) {
+        return NextResponse.json(
+          { error: "Unable to connect to database. Please try again later." },
+          { status: 503 }
+        )
+      }
+    }
+
     return NextResponse.json(
       { error: "Failed to submit application" },
       { status: 500 }
@@ -93,6 +110,23 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ applications })
   } catch (error) {
     console.error("Error fetching applications:", error)
+
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("DATABASE_URL")) {
+        return NextResponse.json(
+          { error: "Database configuration error. Please contact support." },
+          { status: 500 }
+        )
+      }
+      if (error.message.includes("connect") || error.message.includes("ECONNREFUSED")) {
+        return NextResponse.json(
+          { error: "Unable to connect to database. Please try again later." },
+          { status: 503 }
+        )
+      }
+    }
+
     return NextResponse.json(
       { error: "Failed to fetch applications" },
       { status: 500 }
