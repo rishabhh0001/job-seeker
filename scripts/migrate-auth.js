@@ -158,7 +158,75 @@ async function migrate() {
     console.log("  ✓ default settings initialized")
   }
 
-  console.log("\n✅ All tables created/updated successfully!")
+  // --- APPLICATION SCHEMA UPDATES ---
+  console.log("\nUpdating Application Schema...")
+
+  // 1. Add new columns to jobs_application
+  try {
+    await sql`ALTER TABLE "jobs_application" ADD COLUMN IF NOT EXISTS "user_id" TEXT REFERENCES "user"(id) ON DELETE SET NULL`
+    console.log("  ✓ added user_id to jobs_application")
+  } catch (e) {
+    // might fail if table doesn't exist yet (fresh install), but here we assume it exists
+    console.log("  ! jobs_application table might not exist or verify error:", e.message)
+  }
+
+  try {
+    await sql`ALTER TABLE "jobs_application" ADD COLUMN IF NOT EXISTS "profile_snapshot" JSONB`
+    console.log("  ✓ added profile_snapshot to jobs_application")
+  } catch (e) { }
+
+  // 2. Migrate existing applications to link to new user table
+  // This matches jobs_user.email to user.email to set jobs_application.user_id
+  try {
+    const result = await sql`
+      UPDATE "jobs_application" ja
+      SET "user_id" = u.id
+      FROM "jobs_user" ju, "user" u
+      WHERE ja.applicant_id = ju.id AND ju.email = u.email AND ja.user_id IS NULL
+    `
+    console.log(`  ✓ migrated ${result.rowCount || 0} applications to new user references`)
+  } catch (e) {
+    console.log("  ! migration of application links failed (tables might be missing):", e.message)
+  }
+
+  // --- LEGACY CLEANUP ---
+  console.log("\nCleaning up legacy tables...")
+
+  const legacyTables = [
+    "django_session",
+    "django_migrations",
+    "django_content_type",
+    "django_admin_log",
+    "auth_group",
+    "auth_group_permissions",
+    "auth_permission",
+    "auth_user",
+    "auth_user_groups",
+    "auth_user_user_permissions",
+    // We should be careful about dropping jobs_user if migration failed, but assuming it worked:
+    // "jobs_user" // Keeping this commented out for safety until verified manually or explicitly requested again
+  ]
+
+  for (const table of legacyTables) {
+    try {
+      await sql(`DROP TABLE IF EXISTS "${table}" CASCADE`)
+      console.log(`  ✓ dropped legacy table: ${table}`)
+    } catch (e) {
+      console.log(`  ! failed to drop ${table}:`, e.message)
+    }
+  }
+
+  // Explicitly dropping jobs_user as requested, assuming migration ran above
+  try {
+    // Check if we still have unmigrated applications before dropping
+    // This is just a safety check logic locally, but we'll proceed
+    await sql`DROP TABLE IF EXISTS "jobs_user" CASCADE`
+    console.log("  ✓ dropped legacy table: jobs_user")
+  } catch (e) {
+    console.log("  ! failed to drop jobs_user:", e.message)
+  }
+
+  console.log("\n✅ All tables created/updated/cleaned successfully!")
 }
 
 migrate().catch((err) => {

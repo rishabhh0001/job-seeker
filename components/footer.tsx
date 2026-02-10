@@ -80,15 +80,31 @@ export function Footer() {
           </div>
           <div>
             <h3 className="mb-3 font-heading text-sm font-bold text-foreground">
-              For Employers
+              Company
             </h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  href="/dashboard"
+                  href="/about"
                   className="transition-colors hover:text-foreground"
                 >
-                  Dashboard
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms-of-service"
+                  className="transition-colors hover:text-foreground"
+                >
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/privacy-policy"
+                  className="transition-colors hover:text-foreground"
+                >
+                  Privacy Policy
                 </Link>
               </li>
               <li>
@@ -96,7 +112,7 @@ export function Footer() {
                   href="/companies"
                   className="transition-colors hover:text-foreground"
                 >
-                  Company Profiles
+                  Partners
                 </Link>
               </li>
             </ul>

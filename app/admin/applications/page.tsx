@@ -20,6 +20,7 @@ type Application = {
     job_id: number
     job_title: string
     job_slug: string
+    profile_snapshot: any
     category_name: string
 }
 
@@ -291,85 +292,192 @@ export default function ApplicationsAdminPage() {
                 itemCount={selectedIds.size}
             />
 
-            {/* Application Detail Modal */}
+            {/* Application Detail Modal - Enhanced */}
             {viewingApplication && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                    <div className="w-full max-w-2xl rounded-lg border border-border bg-card p-6 shadow-lg">
-                        <div className="mb-4 flex items-center justify-between">
-                            <h2 className="font-heading text-xl font-bold text-foreground">
-                                Application Details
-                            </h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
+                    <div className="w-full max-w-4xl h-[90vh] overflow-hidden rounded-xl border border-border bg-card shadow-2xl flex flex-col animate-in zoom-in-95 duration-200">
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b border-border p-6 bg-muted/20">
+                            <div>
+                                <h2 className="font-heading text-xl font-bold text-foreground">
+                                    Application Details
+                                </h2>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                    Applied on {new Date(viewingApplication.applied_at).toLocaleDateString()}
+                                </p>
+                            </div>
                             <button
                                 onClick={() => setViewingApplication(null)}
-                                className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                className="rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                             >
                                 <X className="h-5 w-5" />
                             </button>
                         </div>
 
-                        <div className="space-y-4">
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Applicant</p>
-                                <p className="text-foreground">{viewingApplication.applicant_name}</p>
-                                <p className="text-sm text-muted-foreground">
-                                    {viewingApplication.applicant_email}
-                                </p>
-                            </div>
+                        {/* Content - Scrollable */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
 
-                            <div>
-                                <p className="text-sm font-medium text-muted-foreground">Job</p>
-                                <p className="text-foreground">{viewingApplication.job_title}</p>
-                            </div>
-
-                            {viewingApplication.cover_letter && (
-                                <div>
-                                    <p className="text-sm font-medium text-muted-foreground">
-                                        Cover Letter
-                                    </p>
-                                    <p className="whitespace-pre-wrap text-sm text-foreground">
-                                        {viewingApplication.cover_letter}
-                                    </p>
+                            {/* Summary Card */}
+                            <div className="flex flex-col md:flex-row gap-6 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                                <div className="flex-1">
+                                    <h3 className="text-lg font-bold text-foreground mb-1">{viewingApplication.applicant_name}</h3>
+                                    <p className="text-sm text-muted-foreground mb-3">{viewingApplication.applicant_email}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        <span className={`px-2 py-1 rounded-md text-xs font-semibold ${statusStyles[viewingApplication.status]}`}>
+                                            {viewingApplication.status}
+                                        </span>
+                                        <span className="px-2 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
+                                            {viewingApplication.job_title}
+                                        </span>
+                                    </div>
                                 </div>
-                            )}
 
-                            {viewingApplication.parsed_text && (
-                                <div>
-                                    <p className="text-sm font-medium text-muted-foreground">Resume</p>
-                                    <div className="max-h-64 overflow-y-auto rounded-md bg-muted p-3 font-mono text-xs text-foreground">
-                                        {viewingApplication.parsed_text}
+                                <div className="flex flex-col gap-2 min-w-[140px]">
+                                    <button
+                                        onClick={() => {
+                                            handleUpdateStatus(viewingApplication.id, "Accepted")
+                                            setViewingApplication(null)
+                                        }}
+                                        className="rounded-md bg-accent/10 px-4 py-2 text-sm font-medium text-accent hover:bg-accent/20 transition-colors"
+                                    >
+                                        Accept
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handleUpdateStatus(viewingApplication.id, "Review")
+                                            setViewingApplication(null)
+                                        }}
+                                        className="rounded-md bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20 transition-colors"
+                                    >
+                                        Under Review
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            handleUpdateStatus(viewingApplication.id, "Rejected")
+                                            setViewingApplication(null)
+                                        }}
+                                        className="rounded-md bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/20 transition-colors"
+                                    >
+                                        Reject
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Profile Snapshot Section */}
+                            {viewingApplication.profile_snapshot && (
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {/* Personal Info */}
+                                    <div className="space-y-4">
+                                        <h4 className="font-semibold text-foreground border-b border-border pb-2">Personal Info</h4>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                            <div className="text-muted-foreground">Phone</div>
+                                            <div>{viewingApplication.profile_snapshot.phone || "N/A"}</div>
+
+                                            <div className="text-muted-foreground">Location</div>
+                                            <div>
+                                                {[
+                                                    viewingApplication.profile_snapshot.city,
+                                                    viewingApplication.profile_snapshot.state,
+                                                    viewingApplication.profile_snapshot.country
+                                                ].filter(Boolean).join(", ") || "N/A"}
+                                            </div>
+
+                                            <div className="text-muted-foreground">Date of Birth</div>
+                                            <div>{viewingApplication.profile_snapshot.dateOfBirth ? new Date(viewingApplication.profile_snapshot.dateOfBirth).toLocaleDateString() : "N/A"}</div>
+                                        </div>
+                                    </div>
+
+                                    {/* Education */}
+                                    <div className="space-y-4">
+                                        <h4 className="font-semibold text-foreground border-b border-border pb-2">Education</h4>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                            <div className="text-muted-foreground">Qualification</div>
+                                            <div>{viewingApplication.profile_snapshot.highestQualification || "N/A"}</div>
+
+                                            <div className="text-muted-foreground">Institute</div>
+                                            <div>{viewingApplication.profile_snapshot.collegeName || "N/A"}</div>
+
+                                            <div className="text-muted-foreground">Major</div>
+                                            <div>{viewingApplication.profile_snapshot.major || "N/A"}</div>
+
+                                            <div className="text-muted-foreground">Graduation</div>
+                                            <div>{viewingApplication.profile_snapshot.graduationYear || "N/A"}</div>
+
+                                            {viewingApplication.profile_snapshot.gpa && (
+                                                <>
+                                                    <div className="text-muted-foreground">GPA</div>
+                                                    <div>{viewingApplication.profile_snapshot.gpa}</div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Professional */}
+                                    <div className="space-y-4 md:col-span-2">
+                                        <h4 className="font-semibold text-foreground border-b border-border pb-2">Professional Experience</h4>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                                                <div className="text-muted-foreground">Experience</div>
+                                                <div>{viewingApplication.profile_snapshot.yearsOfExperience ? `${viewingApplication.profile_snapshot.yearsOfExperience} years` : "N/A"}</div>
+
+                                                <div className="text-muted-foreground">Current Title</div>
+                                                <div>{viewingApplication.profile_snapshot.currentJobTitle || "N/A"}</div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <div className="text-sm text-muted-foreground">Links</div>
+                                                <div className="flex gap-4">
+                                                    {viewingApplication.profile_snapshot.linkedin && (
+                                                        <a href={viewingApplication.profile_snapshot.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                                                            LinkedIn Profile
+                                                        </a>
+                                                    )}
+                                                    {viewingApplication.profile_snapshot.portfolio && (
+                                                        <a href={viewingApplication.profile_snapshot.portfolio} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                                                            Portfolio
+                                                        </a>
+                                                    )}
+                                                    {!viewingApplication.profile_snapshot.linkedin && !viewingApplication.profile_snapshot.portfolio && (
+                                                        <span className="text-sm text-muted-foreground">No links provided</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {viewingApplication.profile_snapshot.skills && (
+                                            <div className="mt-4">
+                                                <div className="text-sm text-muted-foreground mb-2">Skills</div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {viewingApplication.profile_snapshot.skills.split(',').map((skill: string, i: number) => (
+                                                        <span key={i} className="px-2 py-1 rounded-md bg-muted text-foreground text-xs font-mono">
+                                                            {skill.trim()}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}
 
-                            <div className="flex gap-2 pt-4">
-                                <button
-                                    onClick={() => {
-                                        handleUpdateStatus(viewingApplication.id, "Accepted")
-                                        setViewingApplication(null)
-                                    }}
-                                    className="rounded-md bg-accent/10 px-4 py-2 text-sm font-medium text-accent hover:bg-accent/20"
-                                >
-                                    Accept
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        handleUpdateStatus(viewingApplication.id, "Rejected")
-                                        setViewingApplication(null)
-                                    }}
-                                    className="rounded-md bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/20"
-                                >
-                                    Reject
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        handleUpdateStatus(viewingApplication.id, "Review")
-                                        setViewingApplication(null)
-                                    }}
-                                    className="rounded-md bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20"
-                                >
-                                    Under Review
-                                </button>
-                            </div>
+                            {/* Cover Letter */}
+                            {viewingApplication.cover_letter && (
+                                <div className="space-y-2">
+                                    <h4 className="font-semibold text-foreground border-b border-border pb-2">Cover Letter</h4>
+                                    <div className="rounded-lg bg-muted/30 p-4 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+                                        {viewingApplication.cover_letter}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Resume */}
+                            {viewingApplication.parsed_text && (
+                                <div className="space-y-2">
+                                    <h4 className="font-semibold text-foreground border-b border-border pb-2">Resume Transcript</h4>
+                                    <div className="max-h-96 overflow-y-auto rounded-lg bg-muted/30 p-4 font-mono text-xs text-foreground whitespace-pre-wrap">
+                                        {viewingApplication.parsed_text}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
