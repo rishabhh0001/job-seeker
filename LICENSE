@@ -1,21 +1,106 @@
-MIT License
+PROPRIETARY LICENSE WITH ATTRIBUTION REQUIREMENT
 
-Copyright (c) 2026 Job Seeker
+Copyright (c) 2026 Rishabh Joshi (https://github.com/rishabhh0001)
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+================================================================================
+                            TERMS AND CONDITIONS
+================================================================================
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. DEFINITIONS
+   "Software" refers to the JobPortal application, including all source code,
+   documentation, assets, and associated files in this repository.
+   
+   "Author" refers to Rishabh Joshi.
+   
+   "You" refers to any individual or legal entity exercising permissions
+   granted by this license.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. GRANT OF RIGHTS
+   Subject to the terms and conditions of this license, the Author grants You
+   a limited, non-exclusive, non-transferable, revocable license to:
+   
+   a) View and study the source code for educational purposes
+   b) Fork the repository for personal learning and reference
+   c) Use the Software for personal, non-commercial projects
+
+3. RESTRICTIONS
+   You may NOT, without explicit written permission from the Author:
+   
+   a) Use, copy, modify, merge, publish, distribute, sublicense, or sell
+      copies of the Software for commercial purposes
+   
+   b) Remove, alter, or obscure any copyright notices, attribution, or
+      licensing information from the Software
+   
+   c) Use the Software or any substantial portion thereof in production
+      applications or commercial products
+   
+   d) Redistribute the Software or any derivative works without maintaining
+      all original copyright notices and attribution to the Author
+
+4. ATTRIBUTION REQUIREMENTS
+   If You are granted permission to use or distribute this Software or any
+   derivative works, You MUST:
+   
+   a) Retain all copyright notices, including:
+      - This LICENSE file in its entirety
+      - Copyright notices in all source files
+      - Attribution in the README.md file
+   
+   b) Provide clear, visible attribution to the Author in:
+      - Your application's "About" or "Credits" section
+      - Any public-facing documentation
+      - Your project's README if redistributing source code
+   
+   c) Include a link to the original repository:
+      https://github.com/rishabhh0001/job-seeker
+   
+   d) Clearly state that the work is derived from the Author's project
+
+5. COMMERCIAL USE
+   Any commercial use, including but not limited to:
+   - Deploying the Software as a paid service
+   - Integrating the Software into commercial products
+   - Using the Software to generate revenue
+   
+   REQUIRES explicit written permission from the Author and may be subject
+   to licensing fees or royalty agreements.
+
+6. MODIFICATIONS AND DERIVATIVE WORKS
+   a) You may create modifications or derivative works solely for personal,
+      non-commercial use
+   
+   b) Any distribution of modified versions requires:
+      - Prior written permission from the Author
+      - Clear indication that changes were made
+      - Retention of all original attribution and copyright notices
+      - Distribution under the same license terms
+
+7. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+8. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+   USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+9. TERMINATION
+   This license automatically terminates if You fail to comply with any of
+   its terms and conditions. Upon termination, You must immediately cease all
+   use of the Software and destroy all copies in Your possession.
+
+10. CONTACT FOR PERMISSIONS
+    For permissions beyond the scope of this license, please contact:
+    
+    Email: help@rishabhj.in
+    GitHub: https://github.com/rishabhh0001
+    Website: https://job.rishabhj.in
+
+================================================================================
+
+By using, viewing, or accessing this Software, You acknowledge that You have
+read this License, understand it, and agree to be bound by its terms and
+conditions.

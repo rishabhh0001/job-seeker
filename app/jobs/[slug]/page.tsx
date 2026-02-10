@@ -12,6 +12,8 @@ import {
   ExternalLink,
 } from "lucide-react"
 
+import { ApplyButton } from "@/components/apply-button"
+
 async function getJob(slug: string): Promise<Job | null> {
   const rows = await sql`
     SELECT j.*, u.company_name, u.username AS employer_username,
@@ -148,12 +150,7 @@ export default async function JobDetailPage({
             </ul>
 
             <div className="mt-6">
-              <Link
-                href={`/jobs/${slug}/apply`}
-                className="block w-full rounded-lg bg-primary px-6 py-3 text-center text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20"
-              >
-                Apply Now
-              </Link>
+              <ApplyButton jobSlug={slug} />
             </div>
           </div>
         </div>
