@@ -15,6 +15,7 @@ import {
     CheckCircle2,
 } from "lucide-react"
 import { useSession, authClient } from "@/lib/auth-client"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 interface PasskeyInfo {
     id: string
@@ -190,10 +191,12 @@ export default function ProfilePage() {
 
     return (
         <div className="mx-auto max-w-2xl px-4 py-10 space-y-8">
-            <div>
-                <h1 className="font-heading text-3xl font-bold text-foreground">Account Settings</h1>
-                <p className="mt-1 text-muted-foreground">Manage your profile, security, and preferences</p>
-            </div>
+            <AnimateOnScroll animation="fade-down">
+                <div>
+                    <h1 className="font-heading text-3xl font-bold text-foreground">Account Settings</h1>
+                    <p className="mt-1 text-muted-foreground">Manage your profile, security, and preferences</p>
+                </div>
+            </AnimateOnScroll>
 
             {success && (
                 <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-400">
@@ -208,204 +211,212 @@ export default function ProfilePage() {
             )}
 
             {/* Personal Info */}
-            <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                        <User className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                        <h2 className="font-heading text-lg font-bold text-foreground">Personal Information</h2>
-                        <p className="text-sm text-muted-foreground">{user?.email}</p>
-                    </div>
-                </div>
-                <form onSubmit={handleSavePersonal} className="space-y-4">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-foreground">First Name</label>
-                            <input
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                placeholder="First name"
-                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                            />
-                        </div>
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-foreground">Last Name</label>
-                            <input
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                placeholder="Last name"
-                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                            />
-                        </div>
-                    </div>
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Display Name</label>
-                        <input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Display name"
-                            required
-                            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={saving === "personal"}
-                        className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-                    >
-                        {saving === "personal" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                        Save Changes
-                    </button>
-                </form>
-            </section>
-
-            {/* Company */}
-            <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10">
-                        <Building2 className="h-5 w-5 text-amber-500" />
-                    </div>
-                    <div>
-                        <h2 className="font-heading text-lg font-bold text-foreground">Company & Role</h2>
-                        <p className="text-sm text-muted-foreground">
-                            Current role: <span className="font-semibold capitalize text-foreground">{role}</span>
-                        </p>
-                    </div>
-                </div>
-                <form onSubmit={handleSaveCompany} className="space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Company Name</label>
-                        <input
-                            value={companyName}
-                            onChange={(e) => setCompanyName(e.target.value)}
-                            placeholder="Your company name (set to become employer)"
-                            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                        />
-                        <p className="text-xs text-muted-foreground">Setting a company name will switch your role to Employer</p>
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={saving === "company"}
-                        className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-amber-600 disabled:opacity-50"
-                    >
-                        {saving === "company" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                        Save Company
-                    </button>
-                </form>
-            </section>
-
-            {/* Security */}
-            <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10">
-                        <Shield className="h-5 w-5 text-red-500" />
-                    </div>
-                    <h2 className="font-heading text-lg font-bold text-foreground">Security</h2>
-                </div>
-                <form onSubmit={handleChangePassword} className="space-y-4">
-                    <div className="space-y-1.5">
-                        <label className="text-sm font-medium text-foreground">Current Password</label>
-                        <input
-                            name="currentPassword"
-                            type="password"
-                            required
-                            placeholder="Enter current password"
-                            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                        />
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-foreground">New Password</label>
-                            <input
-                                name="newPassword"
-                                type="password"
-                                required
-                                placeholder="Min 8 characters"
-                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                            />
-                        </div>
-                        <div className="space-y-1.5">
-                            <label className="text-sm font-medium text-foreground">Confirm Password</label>
-                            <input
-                                name="confirmPassword"
-                                type="password"
-                                required
-                                placeholder="Re-enter password"
-                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
-                            />
-                        </div>
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={saving === "password"}
-                        className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-600 disabled:opacity-50"
-                    >
-                        {saving === "password" ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
-                        Change Password
-                    </button>
-                </form>
-            </section>
-
-            {/* Passkeys */}
-            <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10">
-                            <Fingerprint className="h-5 w-5 text-violet-500" />
+            <AnimateOnScroll animation="fade-up" delay={100}>
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                            <User className="h-5 w-5 text-primary" />
                         </div>
                         <div>
-                            <h2 className="font-heading text-lg font-bold text-foreground">Passkeys</h2>
-                            <p className="text-sm text-muted-foreground">Sign in without a password</p>
+                            <h2 className="font-heading text-lg font-bold text-foreground">Personal Information</h2>
+                            <p className="text-sm text-muted-foreground">{user?.email}</p>
                         </div>
                     </div>
-                    <button
-                        onClick={handleRegisterPasskey}
-                        disabled={saving === "passkey-register"}
-                        className="flex items-center gap-1.5 rounded-lg bg-violet-500 px-3 py-2 text-sm font-bold text-white hover:bg-violet-600 disabled:opacity-50"
-                    >
-                        {saving === "passkey-register" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-                        Add
-                    </button>
-                </div>
-
-                {passkeys.length === 0 ? (
-                    <p className="text-center text-sm text-muted-foreground py-6">No passkeys registered yet</p>
-                ) : (
-                    <div className="space-y-3">
-                        {passkeys.map((pk) => (
-                            <div
-                                key={pk.id}
-                                className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <Fingerprint className="h-5 w-5 text-violet-400" />
-                                    <div>
-                                        <p className="text-sm font-semibold text-foreground">
-                                            {pk.name || "Unnamed Passkey"}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {pk.deviceType} · Added{" "}
-                                            {new Date(pk.createdAt).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={() => handleDeletePasskey(pk.id)}
-                                    disabled={saving === `passkey-delete-${pk.id}`}
-                                    className="text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
-                                >
-                                    {saving === `passkey-delete-${pk.id}` ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Trash2 className="h-4 w-4" />
-                                    )}
-                                </button>
+                    <form onSubmit={handleSavePersonal} className="space-y-4">
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-foreground">First Name</label>
+                                <input
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
+                                    placeholder="First name"
+                                    className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                                />
                             </div>
-                        ))}
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-foreground">Last Name</label>
+                                <input
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    placeholder="Last name"
+                                    className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground">Display Name</label>
+                            <input
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="Display name"
+                                required
+                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={saving === "personal"}
+                            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                        >
+                            {saving === "personal" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                            Save Changes
+                        </button>
+                    </form>
+                </section>
+            </AnimateOnScroll>
+
+            {/* Company */}
+            <AnimateOnScroll animation="fade-up" delay={200}>
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10">
+                            <Building2 className="h-5 w-5 text-amber-500" />
+                        </div>
+                        <div>
+                            <h2 className="font-heading text-lg font-bold text-foreground">Company & Role</h2>
+                            <p className="text-sm text-muted-foreground">
+                                Current role: <span className="font-semibold capitalize text-foreground">{role}</span>
+                            </p>
+                        </div>
                     </div>
-                )}
-            </section>
+                    <form onSubmit={handleSaveCompany} className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground">Company Name</label>
+                            <input
+                                value={companyName}
+                                onChange={(e) => setCompanyName(e.target.value)}
+                                placeholder="Your company name (set to become employer)"
+                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                            />
+                            <p className="text-xs text-muted-foreground">Setting a company name will switch your role to Employer</p>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={saving === "company"}
+                            className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-amber-600 disabled:opacity-50"
+                        >
+                            {saving === "company" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                            Save Company
+                        </button>
+                    </form>
+                </section>
+            </AnimateOnScroll>
+
+            {/* Security */}
+            <AnimateOnScroll animation="fade-up" delay={300}>
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10">
+                            <Shield className="h-5 w-5 text-red-500" />
+                        </div>
+                        <h2 className="font-heading text-lg font-bold text-foreground">Security</h2>
+                    </div>
+                    <form onSubmit={handleChangePassword} className="space-y-4">
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground">Current Password</label>
+                            <input
+                                name="currentPassword"
+                                type="password"
+                                required
+                                placeholder="Enter current password"
+                                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                            />
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-foreground">New Password</label>
+                                <input
+                                    name="newPassword"
+                                    type="password"
+                                    required
+                                    placeholder="Min 8 characters"
+                                    className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                                />
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-foreground">Confirm Password</label>
+                                <input
+                                    name="confirmPassword"
+                                    type="password"
+                                    required
+                                    placeholder="Re-enter password"
+                                    className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/40"
+                                />
+                            </div>
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={saving === "password"}
+                            className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-600 disabled:opacity-50"
+                        >
+                            {saving === "password" ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
+                            Change Password
+                        </button>
+                    </form>
+                </section>
+            </AnimateOnScroll>
+
+            {/* Passkeys */}
+            <AnimateOnScroll animation="fade-up" delay={400}>
+                <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+                    <div className="flex items-center justify-between mb-5">
+                        <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10">
+                                <Fingerprint className="h-5 w-5 text-violet-500" />
+                            </div>
+                            <div>
+                                <h2 className="font-heading text-lg font-bold text-foreground">Passkeys</h2>
+                                <p className="text-sm text-muted-foreground">Sign in without a password</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleRegisterPasskey}
+                            disabled={saving === "passkey-register"}
+                            className="flex items-center gap-1.5 rounded-lg bg-violet-500 px-3 py-2 text-sm font-bold text-white hover:bg-violet-600 disabled:opacity-50"
+                        >
+                            {saving === "passkey-register" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                            Add
+                        </button>
+                    </div>
+
+                    {passkeys.length === 0 ? (
+                        <p className="text-center text-sm text-muted-foreground py-6">No passkeys registered yet</p>
+                    ) : (
+                        <div className="space-y-3">
+                            {passkeys.map((pk) => (
+                                <div
+                                    key={pk.id}
+                                    className="flex items-center justify-between rounded-lg border border-border bg-background px-4 py-3"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Fingerprint className="h-5 w-5 text-violet-400" />
+                                        <div>
+                                            <p className="text-sm font-semibold text-foreground">
+                                                {pk.name || "Unnamed Passkey"}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {pk.deviceType} · Added{" "}
+                                                {new Date(pk.createdAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDeletePasskey(pk.id)}
+                                        disabled={saving === `passkey-delete-${pk.id}`}
+                                        className="text-muted-foreground hover:text-destructive transition-colors disabled:opacity-50"
+                                    >
+                                        {saving === `passkey-delete-${pk.id}` ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <Trash2 className="h-4 w-4" />
+                                        )}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </section>
+            </AnimateOnScroll>
         </div>
     )
 }

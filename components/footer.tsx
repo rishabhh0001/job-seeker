@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Briefcase, Check, Loader2 } from "lucide-react"
 import { useState } from "react"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 export function Footer() {
   const [email, setEmail] = useState("")
@@ -37,7 +38,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-card">
-      <div className="mx-auto max-w-6xl px-4 py-12">
+      <AnimateOnScroll animation="fade-up" className="mx-auto max-w-6xl px-4 py-12">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <Link
@@ -143,7 +144,7 @@ export function Footer() {
         <div className="mt-10 border-t border-border pt-6 text-center text-sm text-muted-foreground">
           2026 JobPortal. All rights reserved.
         </div>
-      </div>
+      </AnimateOnScroll>
     </footer>
   )
 }

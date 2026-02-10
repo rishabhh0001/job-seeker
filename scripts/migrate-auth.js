@@ -89,7 +89,6 @@ async function migrate() {
       name TEXT,
       "publicKey" TEXT NOT NULL,
       "userId" TEXT NOT NULL REFERENCES "user"(id) ON DELETE CASCADE,
-      "webauthnUserID" TEXT NOT NULL,
       counter INTEGER NOT NULL DEFAULT 0,
       "deviceType" TEXT NOT NULL,
       "backedUp" BOOLEAN NOT NULL DEFAULT FALSE,
@@ -100,6 +99,14 @@ async function migrate() {
     )
   `
   console.log("  ✓ passkey table")
+
+  // Drop legacy column that Better Auth doesn't use (fixes 500 on verify-registration)
+  try {
+    await sql`ALTER TABLE "passkey" DROP COLUMN IF EXISTS "webauthnUserID"`
+    console.log("  ✓ dropped legacy webauthnUserID column")
+  } catch (e) {
+    // column may not exist
+  }
 
   console.log("\n✅ All tables created/updated successfully!")
 }

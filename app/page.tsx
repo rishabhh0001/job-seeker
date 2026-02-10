@@ -4,6 +4,7 @@ import type { Job, Category } from "@/lib/db"
 import { HeroSection } from "@/components/hero-section"
 import { CategoryCards } from "@/components/category-cards"
 import { JobCard } from "@/components/job-card"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 async function getCategories(): Promise<Category[]> {
   const rows = await sql`
@@ -83,7 +84,7 @@ export default async function HomePage({
       <CategoryCards categories={categories} />
 
       <section className="mx-auto max-w-6xl px-4 pb-20">
-        <div className="mb-6 flex items-center justify-between">
+        <AnimateOnScroll animation="fade-right" className="mb-6 flex items-center justify-between">
           <h2 className="font-heading text-2xl font-bold text-foreground">
             Latest{" "}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -93,17 +94,19 @@ export default async function HomePage({
           <span className="rounded-md bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
             {jobs.length} found
           </span>
-        </div>
+        </AnimateOnScroll>
 
         <div className="flex flex-col gap-3">
           {jobs.length > 0 ? (
             jobs.map((job, i) => <JobCard key={job.id} job={job} index={i} />)
           ) : (
-            <div className="animate-fade-in rounded-xl border border-border bg-card py-20 text-center">
-              <p className="text-muted-foreground">
-                No jobs found matching your criteria.
-              </p>
-            </div>
+            <AnimateOnScroll animation="scale-in">
+              <div className="rounded-xl border border-border bg-card py-20 text-center">
+                <p className="text-muted-foreground">
+                  No jobs found matching your criteria.
+                </p>
+              </div>
+            </AnimateOnScroll>
           )}
         </div>
       </section>

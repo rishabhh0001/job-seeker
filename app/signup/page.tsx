@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Briefcase, Loader2, Eye, EyeOff } from "lucide-react"
 import { signUp, signIn } from "@/lib/auth-client"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 function GithubIcon({ className }: { className?: string }) {
     return (
@@ -76,7 +77,7 @@ export default function SignupPage() {
 
     return (
         <div className="flex min-h-[80vh] items-center justify-center px-4">
-            <div className="w-full max-w-md space-y-8">
+            <AnimateOnScroll animation="scale-in" className="w-full max-w-md space-y-8">
                 <div className="text-center">
                     <Link
                         href="/"
@@ -142,8 +143,8 @@ export default function SignupPage() {
                                     onClick={() => setRole("applicant")}
                                     disabled={isDisabled}
                                     className={`rounded-lg border px-4 py-3 text-sm font-semibold transition-all ${role === "applicant"
-                                            ? "border-primary bg-primary/10 text-primary"
-                                            : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                                        ? "border-primary bg-primary/10 text-primary"
+                                        : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
                                         } disabled:opacity-50`}
                                 >
                                     Job Seeker
@@ -153,8 +154,8 @@ export default function SignupPage() {
                                     onClick={() => setRole("employer")}
                                     disabled={isDisabled}
                                     className={`rounded-lg border px-4 py-3 text-sm font-semibold transition-all ${role === "employer"
-                                            ? "border-primary bg-primary/10 text-primary"
-                                            : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                                        ? "border-primary bg-primary/10 text-primary"
+                                        : "border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
                                         } disabled:opacity-50`}
                                 >
                                     Employer
@@ -226,7 +227,7 @@ export default function SignupPage() {
                     Already have an account?{" "}
                     <Link href="/login" className="font-semibold text-primary hover:underline">Sign in</Link>
                 </p>
-            </div>
+            </AnimateOnScroll>
         </div>
     )
 }

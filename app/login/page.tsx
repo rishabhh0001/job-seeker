@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Briefcase, Loader2, Eye, EyeOff, Fingerprint } from "lucide-react"
 import { authClient, signIn } from "@/lib/auth-client"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 function GithubIcon({ className }: { className?: string }) {
     return (
@@ -208,9 +209,11 @@ function LoginForm() {
 export default function LoginPage() {
     return (
         <div className="flex min-h-[80vh] items-center justify-center px-4">
-            <Suspense fallback={<div className="h-96 w-full max-w-md animate-pulse rounded-2xl bg-muted" />}>
-                <LoginForm />
-            </Suspense>
+            <AnimateOnScroll animation="scale-in">
+                <Suspense fallback={<div className="h-96 w-full max-w-md animate-pulse rounded-2xl bg-muted" />}>
+                    <LoginForm />
+                </Suspense>
+            </AnimateOnScroll>
         </div>
     )
 }

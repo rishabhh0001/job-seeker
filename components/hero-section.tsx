@@ -24,9 +24,9 @@ export function HeroSection() {
     <section className="relative overflow-hidden px-4 pb-20 pt-28">
       {/* Background glow */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/5 blur-[120px]" />
-        <div className="absolute left-1/2 top-1/3 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-primary/3 blur-[100px]" />
+        <div className="animate-float absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="animate-float absolute -bottom-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/5 blur-[120px]" style={{ animationDelay: "2s" }} />
+        <div className="animate-glow-pulse absolute left-1/2 top-1/3 h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-primary/3 blur-[100px]" />
       </div>
 
       <div className="relative mx-auto max-w-3xl text-center">

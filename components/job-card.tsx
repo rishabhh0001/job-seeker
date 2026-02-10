@@ -2,12 +2,14 @@ import Link from "next/link"
 import { Building2, MapPin } from "lucide-react"
 import type { Job } from "@/lib/db"
 import { JOB_TYPE_LABELS, formatSalary, timeAgo } from "@/lib/db"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
 export function JobCard({ job, index = 0 }: { job: Job; index?: number }) {
   return (
-    <div
-      className="animate-fade-up group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 md:flex-row md:items-center"
-      style={{ animationDelay: `${Math.min(index * 60, 400)}ms` }}
+    <AnimateOnScroll
+      animation="fade-up"
+      delay={Math.min(index * 50, 400)}
+      className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 md:flex-row md:items-center"
     >
       {/* Icon */}
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -63,6 +65,6 @@ export function JobCard({ job, index = 0 }: { job: Job; index?: number }) {
           View Job
         </Link>
       </div>
-    </div>
+    </AnimateOnScroll>
   )
 }
