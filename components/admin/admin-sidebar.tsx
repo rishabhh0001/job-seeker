@@ -9,6 +9,7 @@ import {
     FolderKanban,
     LayoutDashboard,
     ArrowLeft,
+    Settings,
 } from "lucide-react"
 
 export function AdminSidebar() {
@@ -39,6 +40,11 @@ export function AdminSidebar() {
             href: "/admin/categories",
             label: "Categories",
             icon: FolderKanban,
+        },
+        {
+            href: "/admin/settings",
+            label: "Settings",
+            icon: Settings,
         },
     ]
 

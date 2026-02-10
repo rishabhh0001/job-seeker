@@ -28,6 +28,26 @@ async function migrate() {
     { name: "firstName", type: "TEXT DEFAULT ''" },
     { name: "lastName", type: "TEXT DEFAULT ''" },
     { name: "companyName", type: "TEXT DEFAULT ''" },
+    // Personal Information
+    { name: "phone", type: "TEXT" },
+    { name: "dateOfBirth", type: "DATE" },
+    { name: "address", type: "TEXT" },
+    { name: "city", type: "TEXT" },
+    { name: "state", type: "TEXT" },
+    { name: "country", type: "TEXT" },
+    { name: "postalCode", type: "TEXT" },
+    // Education
+    { name: "highestQualification", type: "TEXT" },
+    { name: "collegeName", type: "TEXT" },
+    { name: "major", type: "TEXT" },
+    { name: "graduationYear", type: "INTEGER" },
+    { name: "gpa", type: "NUMERIC(3,2)" },
+    // Professional
+    { name: "yearsOfExperience", type: "INTEGER" },
+    { name: "currentJobTitle", type: "TEXT" },
+    { name: "linkedin", type: "TEXT" },
+    { name: "portfolio", type: "TEXT" },
+    { name: "skills", type: "TEXT" },
   ]
   for (const col of newCols) {
     try {
@@ -106,6 +126,36 @@ async function migrate() {
     console.log("  ✓ dropped legacy webauthnUserID column")
   } catch (e) {
     // column may not exist
+  }
+
+  // Create settings table for admin panel configuration
+  await sql`
+    CREATE TABLE IF NOT EXISTS "settings" (
+      id SERIAL PRIMARY KEY,
+      key TEXT UNIQUE NOT NULL,
+      value TEXT,
+      type TEXT NOT NULL DEFAULT 'string',
+      description TEXT,
+      category TEXT DEFAULT 'general',
+      "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      "updatedBy" TEXT
+    )
+  `
+  console.log("  ✓ settings table")
+
+  // Insert default settings if table is empty
+  const settingsCount = await sql`SELECT COUNT(*) as count FROM "settings"`
+  if (settingsCount[0].count === 0) {
+    await sql`
+      INSERT INTO "settings" (key, value, type, description, category) VALUES
+      ('site_name', 'JobPortal', 'string', 'Name of the website', 'general'),
+      ('site_description', 'Your gateway to career opportunities', 'string', 'Short tagline for the site', 'general'),
+      ('max_applications_per_job', '100', 'number', 'Maximum applications allowed per job posting', 'applications'),
+      ('allow_duplicate_applications', 'false', 'boolean', 'Allow users to apply to the same job multiple times', 'applications'),
+      ('default_email_sender', 'noreply@job.rishabhj.in', 'string', 'Default email sender address', 'email'),
+      ('enable_application_notifications', 'true', 'boolean', 'Send email notifications for new applications', 'email')
+    `
+    console.log("  ✓ default settings initialized")
   }
 
   console.log("\n✅ All tables created/updated successfully!")

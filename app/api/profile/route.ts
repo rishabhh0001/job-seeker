@@ -48,7 +48,15 @@ export async function PUT(request: NextRequest) {
 
         const userId = session.user.id
         const body = await request.json()
-        const { name, firstName, lastName, companyName, role } = body
+        const {
+            name, firstName, lastName, companyName, role,
+            // Contact Info
+            phone, dateOfBirth, address, city, state, country, postalCode,
+            // Education
+            highestQualification, collegeName, major, graduationYear, gpa,
+            // Professional
+            yearsOfExperience, currentJobTitle, linkedin, portfolio, skills
+        } = body
 
         // Build the update
         const result = await sql`
@@ -59,9 +67,26 @@ export async function PUT(request: NextRequest) {
         "lastName" = COALESCE(${lastName || null}, "lastName"),
         "companyName" = COALESCE(${companyName || null}, "companyName"),
         role = COALESCE(${role || null}, role),
+        phone = COALESCE(${phone || null}, phone),
+        "dateOfBirth" = COALESCE(${dateOfBirth || null}, "dateOfBirth"),
+        address = COALESCE(${address || null}, address),
+        city = COALESCE(${city || null}, city),
+        state = COALESCE(${state || null}, state),
+        country = COALESCE(${country || null}, country),
+        "postalCode" = COALESCE(${postalCode || null}, "postalCode"),
+        "highestQualification" = COALESCE(${highestQualification || null}, "highestQualification"),
+        "collegeName" = COALESCE(${collegeName || null}, "collegeName"),
+        major = COALESCE(${major || null}, major),
+        "graduationYear" = COALESCE(${graduationYear || null}, "graduationYear"),
+        gpa = COALESCE(${gpa || null}, gpa),
+        "yearsOfExperience" = COALESCE(${yearsOfExperience || null}, "yearsOfExperience"),
+        "currentJobTitle" = COALESCE(${currentJobTitle || null}, "currentJobTitle"),
+        linkedin = COALESCE(${linkedin || null}, linkedin),
+        portfolio = COALESCE(${portfolio || null}, portfolio),
+        skills = COALESCE(${skills || null}, skills),
         "updatedAt" = NOW()
       WHERE id = ${userId}
-      RETURNING id, name, email, role, "firstName", "lastName", "companyName", image, "createdAt"
+      RETURNING *
     `
 
         if (result.length === 0) {
