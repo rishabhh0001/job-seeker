@@ -24,7 +24,7 @@ export async function GET() {
         }
 
         const settings = await sql`
-            SELECT * FROM "settings"
+            SELECT * FROM admin_settings
             ORDER BY category, key
         `
 
@@ -58,11 +58,10 @@ export async function PUT(request: NextRequest) {
         // Update each setting
         for (const setting of settings) {
             await sql`
-                UPDATE "settings"
+                UPDATE admin_settings
                 SET
                     value = ${setting.value},
-                    "updatedAt" = NOW(),
-                    "updatedBy" = ${user.id}
+                    updated_at = NOW()
                 WHERE key = ${setting.key}
             `
         }

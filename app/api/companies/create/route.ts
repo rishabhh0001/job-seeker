@@ -41,21 +41,21 @@ export async function POST(request: NextRequest) {
         const email = `${username}@placeholder.com`
 
         const result = await sql`
-      INSERT INTO "user" (
-        name, email, "emailVerified", image, "createdAt", "updatedAt",
-        role, "companyName"
-      ) VALUES (
-        ${username}, ${email}, false, null, NOW(), NOW(),
-        'employer', ${companyName}
-      )
-      RETURNING *
-    `
+            INSERT INTO "user" (
+                id, name, email, "emailVerified", "createdAt", "updatedAt",
+                role, "companyName"
+            ) VALUES (
+                gen_random_uuid(), ${username}, ${email}, false, NOW(), NOW(),
+                'employer', ${companyName}
+            )
+            RETURNING *
+        `
 
         return NextResponse.json({ company: result[0] }, { status: 201 })
     } catch (error) {
         console.error("Error creating company:", error)
         return NextResponse.json(
-            { error: "Failed to create company" },
+            { error: error instanceof Error ? error.message : "Failed to create company" },
             { status: 500 }
         )
     }
