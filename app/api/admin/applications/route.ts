@@ -10,11 +10,11 @@ export async function GET(request: NextRequest) {
 
         let query = `
       SELECT a.id, a.status, a.applied_at, a.resume, a.cover_letter, a.parsed_text,
-             u.id AS applicant_id, u.email AS applicant_email, u.username AS applicant_name,
+             u.id AS applicant_id, u.email AS applicant_email, u.name AS applicant_name,
              j.id AS job_id, j.title AS job_title, j.slug AS job_slug,
              c.name AS category_name
       FROM jobs_application a
-      LEFT JOIN jobs_user u ON u.id = a.applicant_id
+      LEFT JOIN "user" u ON u.id = a.user_id
       LEFT JOIN jobs_job j ON j.id = a.job_id
       LEFT JOIN jobs_category c ON c.id = j.category_id
     `
@@ -84,9 +84,9 @@ export async function PUT(request: NextRequest) {
         if (result.length > 0) {
             // Fetch applicant details for email
             const applicationDetails = await sql`
-                SELECT a.status, u.email, u.first_name, u.username, j.title as job_title
+                SELECT a.status, u.email, u."firstName" AS first_name, u.name AS username, j.title as job_title
                 FROM jobs_application a
-                JOIN jobs_user u ON u.id = a.applicant_id
+                JOIN "user" u ON u.id = a.user_id
                 JOIN jobs_job j ON j.id = a.job_id
                 WHERE a.id = ${id}
             `

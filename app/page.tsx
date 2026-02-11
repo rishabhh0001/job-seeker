@@ -24,10 +24,10 @@ async function getJobs(
   category?: string
 ): Promise<Job[]> {
   let baseQuery = `
-    SELECT j.*, u.company_name, u.username AS employer_username,
+    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username,
            c.name AS category_name, c.slug AS category_slug
     FROM jobs_job j
-    LEFT JOIN jobs_user u ON u.id = j.employer_id
+    LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
     LEFT JOIN jobs_category c ON c.id = j.category_id
     WHERE j.is_active = true
   `
@@ -38,7 +38,7 @@ async function getJobs(
     params.push(`%${query}%`)
     const i = params.length
     conditions.push(
-      `(j.title ILIKE $${i} OR j.description ILIKE $${i} OR u.company_name ILIKE $${i})`
+      `(j.title ILIKE $${i} OR j.description ILIKE $${i} OR u."companyName" ILIKE $${i})`
     )
   }
   if (location) {

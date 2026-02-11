@@ -35,8 +35,8 @@ async function getDashboardData(): Promise<{
     `,
     sql`
       SELECT COUNT(*) AS count
-      FROM jobs_user
-      WHERE is_employer = true
+      FROM "user"
+      WHERE role IN ('employer', 'owner')
     `,
   ])
 

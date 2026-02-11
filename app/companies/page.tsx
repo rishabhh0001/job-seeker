@@ -5,14 +5,14 @@ import { Building2, MapPin, Briefcase } from "lucide-react"
 
 async function getEmployers(): Promise<Employer[]> {
   const rows = await sql`
-    SELECT u.id, u.username, u.company_name, u.email,
+    SELECT u.id, u.name AS username, u."companyName" AS company_name, u.email,
            COUNT(j.id) FILTER (WHERE j.is_active = true) AS open_jobs,
            COUNT(j.id) AS total_jobs
-    FROM jobs_user u
-    LEFT JOIN jobs_job j ON j.employer_id = u.id
-    WHERE u.is_employer = true
-    GROUP BY u.id, u.username, u.company_name, u.email
-    ORDER BY u.company_name, u.username
+    FROM "user" u
+    LEFT JOIN jobs_job j ON CAST(j.employer_id AS TEXT) = u.id
+    WHERE u.role IN ('employer', 'owner')
+    GROUP BY u.id, u.name, u."companyName", u.email
+    ORDER BY u."companyName", u.name
   `
   return rows as Employer[]
 }

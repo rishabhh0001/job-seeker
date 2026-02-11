@@ -16,10 +16,10 @@ import { ApplyButton } from "@/components/apply-button"
 
 async function getJob(slug: string): Promise<Job | null> {
   const rows = await sql`
-    SELECT j.*, u.company_name, u.username AS employer_username,
+    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username,
            c.name AS category_name, c.slug AS category_slug
     FROM jobs_job j
-    LEFT JOIN jobs_user u ON u.id = j.employer_id
+    LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
     LEFT JOIN jobs_category c ON c.id = j.category_id
     WHERE j.slug = ${slug}
   `

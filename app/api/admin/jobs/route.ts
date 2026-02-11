@@ -12,11 +12,11 @@ export async function GET(request: NextRequest) {
         let query = `
       SELECT j.id, j.title, j.slug, j.description, j.job_type, j.location,
              j.salary_min, j.salary_max, j.is_active, j.created_at, j.updated_at,
-             u.company_name, u.username AS employer_username, u.id AS employer_id,
+             u."companyName" AS company_name, u.name AS employer_username, u.id AS employer_id,
              c.name AS category_name, c.id AS category_id,
              COUNT(a.id) AS application_count
       FROM jobs_job j
-      LEFT JOIN jobs_user u ON u.id = j.employer_id
+      LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
       LEFT JOIN jobs_category c ON c.id = j.category_id
       LEFT JOIN jobs_application a ON a.job_id = j.id
     `
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
         query += `
       GROUP BY j.id, j.title, j.slug, j.description, j.job_type, j.location,
                j.salary_min, j.salary_max, j.is_active, j.created_at, j.updated_at,
-               u.company_name, u.username, u.id, c.name, c.id
+               u."companyName", u.name, u.id, c.name, c.id
       ORDER BY j.created_at DESC
     `
 

@@ -7,23 +7,23 @@ import { ArrowLeft, MapPin, Briefcase, Users } from "lucide-react"
 
 async function getCompany(id: number): Promise<Employer | null> {
   const rows = await sql`
-    SELECT u.id, u.username, u.company_name, u.email,
+    SELECT u.id, u.name AS username, u."companyName" AS company_name, u.email,
            COUNT(j.id) FILTER (WHERE j.is_active = true) AS open_jobs,
            COUNT(j.id) AS total_jobs
-    FROM jobs_user u
-    LEFT JOIN jobs_job j ON j.employer_id = u.id
-    WHERE u.id = ${id} AND u.is_employer = true
-    GROUP BY u.id, u.username, u.company_name, u.email
+    FROM "user" u
+    LEFT JOIN jobs_job j ON CAST(j.employer_id AS TEXT) = u.id
+    WHERE u.id = ${String(id)} AND u.role IN ('employer', 'owner')
+    GROUP BY u.id, u.name, u."companyName", u.email
   `
   return (rows[0] as Employer) ?? null
 }
 
 async function getCompanyJobs(employerId: number): Promise<Job[]> {
   const rows = await sql`
-    SELECT j.*, u.company_name, u.username AS employer_username,
+    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username,
            c.name AS category_name, c.slug AS category_slug
     FROM jobs_job j
-    LEFT JOIN jobs_user u ON u.id = j.employer_id
+    LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
     LEFT JOIN jobs_category c ON c.id = j.category_id
     WHERE j.employer_id = ${employerId} AND j.is_active = true
     ORDER BY j.created_at DESC
