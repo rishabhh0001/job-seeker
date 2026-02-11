@@ -53,7 +53,7 @@ export const JOB_TYPE_LABELS: Record<string, string> = {
 export function formatSalary(min: number | null, max: number | null): string {
   if (!min && !max) return "Negotiable"
   const fmt = (n: number) =>
-    n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })
+    n.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })
   if (min && max) return `${fmt(min)} - ${fmt(max)}`
   if (min) return `From ${fmt(min)}`
   return `Up to ${fmt(max!)}`

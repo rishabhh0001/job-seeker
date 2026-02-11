@@ -9,6 +9,9 @@ export interface Application {
   status: string
   applied_at: string
   parsed_text: string
+  applicant_name?: string
+  applicant_email?: string
+  profile_snapshot?: any
 }
 
 interface ApplicationsListProps {
@@ -93,11 +96,14 @@ export function ApplicationsList({ jobSlug }: ApplicationsListProps) {
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
                 <User className="h-4 w-4" />
               </div>
-              <div>
+              <div className="flex flex-col">
                 <span className="text-sm font-medium text-foreground">
-                  Applicant #{app.applicant_id}
+                  {app.applicant_name || `Applicant #${app.applicant_id}`}
                 </span>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
+                  {app.applicant_email}
+                </span>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                   <Calendar className="h-3 w-3" />
                   {new Date(app.applied_at).toLocaleDateString("en-US", {
                     month: "short",
@@ -122,17 +128,37 @@ export function ApplicationsList({ jobSlug }: ApplicationsListProps) {
           </button>
 
           {expandedId === app.id && (
-            <div className="animate-fade-down border-t border-border px-4 py-4">
-              <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <FileText className="h-3.5 w-3.5" />
-                Resume Content
-              </div>
-              <div className="max-h-52 overflow-y-auto whitespace-pre-wrap rounded-md bg-input p-3 font-mono text-xs text-muted-foreground">
-                {app.parsed_text?.substring(0, 2000) || "No resume content"}
-                {(app.parsed_text?.length || 0) > 2000 && "\n..."}
+            <div className="animate-fade-down border-t border-border px-4 py-4 space-y-4">
+              {/* Profile Snapshot Section */}
+              {app.profile_snapshot && (
+                <div className="rounded-md bg-background/50 p-3 text-sm">
+                  <h4 className="mb-2 font-semibold text-foreground">Applicant Profile</h4>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                    {Object.entries(app.profile_snapshot)
+                      .filter(([key]) => !['id', 'password', 'createdAt', 'updatedAt', 'emailVerified', 'image'].includes(key))
+                      .map(([key, value]) => (
+                        <div key={key} className="flex flex-col">
+                          <span className="text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                          <span className="font-medium truncate">{String(value)}</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Resume/Cover Letter Section */}
+              <div>
+                <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <FileText className="h-3.5 w-3.5" />
+                  Resume Content
+                </div>
+                <div className="max-h-52 overflow-y-auto whitespace-pre-wrap rounded-md bg-input p-3 font-mono text-xs text-muted-foreground">
+                  {app.parsed_text?.substring(0, 2000) || "No resume content"}
+                  {(app.parsed_text?.length || 0) > 2000 && "\n..."}
+                </div>
               </div>
 
-              <div className="mt-3 flex gap-2">
+              <div className="flex gap-2 pt-2">
                 <button className="rounded-md bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent/20">
                   Accept
                 </button>

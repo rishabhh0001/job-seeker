@@ -1,4 +1,7 @@
 import Link from "next/link"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { isAdminOrAbove, isEmployerOrAbove } from "@/lib/role-utils"
 import { sql } from "@/lib/db"
 import {
   Building2,
@@ -46,7 +49,12 @@ async function getDashboardData(): Promise<{
   }
 }
 
+
+
 export default async function DashboardPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
   const { jobs, employerCount } = await getDashboardData()
 
   const activeJobs = jobs.filter((j) => j.is_active).length
@@ -91,6 +99,15 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          {session?.user && isAdminOrAbove((session.user as any).role) && (
+            <Link
+              href="/dashboard/companies/create"
+              className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-all hover:bg-muted"
+            >
+              <Building2 className="h-4 w-4" />
+              Create Company
+            </Link>
+          )}
           <Link
             href="/companies"
             className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-all hover:bg-muted"
@@ -98,13 +115,23 @@ export default async function DashboardPage() {
             <Building2 className="h-4 w-4" />
             Companies
           </Link>
-          <Link
-            href="/"
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
-          >
-            <Plus className="h-4 w-4" />
-            Browse Jobs
-          </Link>
+          {session?.user && isEmployerOrAbove((session.user as any).role) ? (
+            <Link
+              href="/dashboard/jobs/create"
+              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
+            >
+              <Plus className="h-4 w-4" />
+              Create Job
+            </Link>
+          ) : (
+            <Link
+              href="/"
+              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
+            >
+              <Plus className="h-4 w-4" />
+              Browse Jobs
+            </Link>
+          )}
         </div>
       </div>
 
