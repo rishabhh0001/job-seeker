@@ -180,7 +180,7 @@ export default function ProfilePage() {
                     collegeName,
                     major,
                     graduationYear: graduationYear ? parseInt(graduationYear) : null,
-                    gpa: gpa ? parseFloat(gpa) : null,
+                    gpa: gpa ? parseFloat(gpa) : null, // max 10.0 scale
                 }),
             })
             if (!res.ok) throw new Error("Failed to save")
@@ -231,6 +231,32 @@ export default function ProfilePage() {
             flash("Company info saved!")
         } catch {
             setError("Failed to save company info")
+        } finally {
+            setSaving(null)
+        }
+    }
+
+    async function handleSaveAll() {
+        setSaving("all")
+        setError(null)
+        try {
+            const res = await fetch("/api/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name, firstName, lastName, companyName,
+                    phone, dateOfBirth, address, city, state, country, postalCode,
+                    highestQualification, collegeName, major,
+                    graduationYear: graduationYear ? parseInt(graduationYear) : null,
+                    gpa: gpa ? parseFloat(gpa) : null,
+                    yearsOfExperience: yearsOfExperience ? parseInt(yearsOfExperience) : null,
+                    currentJobTitle, linkedin, portfolio, skills,
+                }),
+            })
+            if (!res.ok) throw new Error("Failed to save")
+            flash("All settings saved successfully!")
+        } catch {
+            setError("Failed to save all settings")
         } finally {
             setSaving(null)
         }
@@ -543,15 +569,15 @@ export default function ProfilePage() {
                                         />
                                     </div>
                                     <div className="space-y-1.5 animate-fade-in">
-                                        <label className="text-sm font-medium text-foreground">GPA (out of 4.0)</label>
+                                        <label className="text-sm font-medium text-foreground">GPA (out of 10.0)</label>
                                         <input
                                             type="number"
                                             step="0.01"
                                             min="0"
-                                            max="4"
+                                            max="10"
                                             value={gpa}
                                             onChange={(e) => setGpa(e.target.value)}
-                                            placeholder="3.75"
+                                            placeholder="8.50"
                                             className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground transition-all duration-200 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20 hover:border-purple-500/50"
                                         />
                                     </div>
@@ -820,6 +846,22 @@ export default function ProfilePage() {
                             ))}
                         </div>
                     )}
+                </section>
+            </AnimateOnScroll>
+
+            {/* Save All Settings */}
+            <AnimateOnScroll animation="fade-up" delay={450}>
+                <section className="rounded-2xl border-2 border-dashed border-primary/30 bg-primary/5 p-6 text-center">
+                    <h2 className="font-heading text-lg font-bold text-foreground mb-2">Save All Settings</h2>
+                    <p className="text-sm text-muted-foreground mb-4">Save all your profile sections at once</p>
+                    <button
+                        onClick={handleSaveAll}
+                        disabled={saving === "all"}
+                        className="inline-flex items-center gap-2 rounded-lg bg-primary px-8 py-3 text-sm font-bold text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    >
+                        {saving === "all" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                        Save All Settings
+                    </button>
                 </section>
             </AnimateOnScroll>
         </div>

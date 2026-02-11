@@ -60,8 +60,8 @@ export function FormModal({
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-            <div className="w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-md max-h-[90vh] overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-lg">
                 <div className="mb-4 flex items-center justify-between">
                     <h2 className="font-heading text-xl font-bold text-foreground">{title}</h2>
                     <button

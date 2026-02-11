@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from "next"
 import { Source_Sans_3, Space_Grotesk } from "next/font/google"
 import "./globals.css"
-import { Navbar } from "@/components/navbar"
-import { Footer } from "@/components/footer"
+import { LayoutShell } from "@/components/layout-shell"
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -36,9 +35,7 @@ export default function RootLayout({
       <body
         className={`${sourceSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}
       >
-        <Navbar />
-        <main className="min-h-screen pt-16">{children}</main>
-        <Footer />
+        <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
   )
