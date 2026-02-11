@@ -43,9 +43,7 @@ export function JobCreateForm({ categories }: { categories: Category[] }) {
             setFormData((prev) => ({
                 ...prev,
                 jobType: preset.value,
-                description: prev.description
-                    ? prev.description
-                    : preset.descriptionTemplate + "\n\n**Requirements:**\n" + preset.requirements.map(r => `- ${r}`).join("\n"),
+                description: preset.descriptionTemplate + "\n\n**Requirements:**\n" + preset.requirements.map(r => `- ${r}`).join("\n"),
             }))
         }
     }
