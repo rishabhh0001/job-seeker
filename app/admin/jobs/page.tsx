@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Filter } from "lucide-react"
+import { Plus, Filter, Trash2 } from "lucide-react"
 import { DataTable, Column } from "@/components/admin/data-table"
 import { SearchBar } from "@/components/admin/search-bar"
 import { BulkActionBar } from "@/components/admin/bulk-action-bar"
@@ -51,6 +51,8 @@ export default function JobsAdminPage() {
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+    const [isSingleDeleteOpen, setIsSingleDeleteOpen] = useState(false)
+    const [jobToDelete, setJobToDelete] = useState<Job | null>(null)
     const [editingJob, setEditingJob] = useState<Job | null>(null)
 
     useEffect(() => {
@@ -199,6 +201,37 @@ export default function JobsAdminPage() {
         setSelectedIds(new Set())
     }
 
+    const handleStatusToggle = async (job: Job) => {
+        try {
+            const res = await fetch(`/api/admin/jobs/${job.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ is_active: !job.is_active }),
+            })
+
+            if (!res.ok) throw new Error("Failed to update status")
+            await fetchData()
+        } catch (error) {
+            console.error("Error updating status:", error)
+        }
+    }
+
+    const handleSingleDelete = async () => {
+        if (!jobToDelete) return
+        try {
+            const res = await fetch(`/api/admin/jobs/${jobToDelete.id}`, {
+                method: "DELETE",
+            })
+
+            if (!res.ok) throw new Error("Failed to delete job")
+            await fetchData()
+            setIsSingleDeleteOpen(false)
+            setJobToDelete(null)
+        } catch (error) {
+            console.error("Error deleting job:", error)
+        }
+    }
+
     const columns: Column<Job>[] = [
         {
             key: "title",
@@ -230,14 +263,18 @@ export default function JobsAdminPage() {
             label: "Status",
             sortable: true,
             render: (job) => (
-                <span
-                    className={`rounded-md px-2 py-1 text-xs font-semibold ${job.is_active
-                            ? "bg-accent/10 text-accent"
-                            : "bg-muted text-muted-foreground"
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        handleStatusToggle(job)
+                    }}
+                    className={`rounded-md px-2 py-1 text-xs font-semibold hover:opacity-80 transition-opacity ${job.is_active
+                        ? "bg-accent/10 text-accent"
+                        : "bg-muted text-muted-foreground"
                         }`}
                 >
                     {job.is_active ? "Active" : "Inactive"}
-                </span>
+                </button>
             ),
         },
         {
@@ -255,6 +292,25 @@ export default function JobsAdminPage() {
             label: "Created",
             sortable: true,
             render: (job) => new Date(job.created_at).toLocaleDateString(),
+        },
+        {
+            key: "actions",
+            label: "Actions",
+            render: (job) => (
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setJobToDelete(job)
+                            setIsSingleDeleteOpen(true)
+                        }}
+                        className="rounded-md p-1 hover:bg-destructive/10 text-destructive transition-colors"
+                        title="Delete Job"
+                    >
+                        <Trash2 className="h-4 w-4" />
+                    </button>
+                </div>
+            )
         },
     ]
 
@@ -419,6 +475,14 @@ export default function JobsAdminPage() {
                 title="Delete Jobs"
                 message="Are you sure you want to delete the selected jobs? This will also delete all associated applications."
                 itemCount={selectedIds.size}
+            />
+
+            <DeleteConfirmation
+                isOpen={isSingleDeleteOpen}
+                onClose={() => setIsSingleDeleteOpen(false)}
+                onConfirm={handleSingleDelete}
+                title="Delete Job"
+                message={`Are you sure you want to delete "${jobToDelete?.title}"? This will also delete all associated applications.`}
             />
         </div>
     )

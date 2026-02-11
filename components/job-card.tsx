@@ -9,11 +9,19 @@ export function JobCard({ job, index = 0 }: { job: Job; index?: number }) {
     <AnimateOnScroll
       animation="fade-up"
       delay={Math.min(index * 50, 400)}
-      className="group flex flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 md:flex-row md:items-center"
+      className="glass-card group flex flex-col gap-4 rounded-xl p-5 md:flex-row md:items-center"
     >
       {/* Icon */}
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <Building2 className="h-5 w-5" />
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary overflow-hidden">
+        {job.employer_logo ? (
+          <img
+            src={job.employer_logo}
+            alt={job.company_name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <Building2 className="h-5 w-5" />
+        )}
       </div>
 
       {/* Info */}

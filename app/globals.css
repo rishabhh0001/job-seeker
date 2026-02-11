@@ -41,6 +41,25 @@
   }
 }
 
+@layer components {
+  .glass {
+    @apply bg-background/70 backdrop-blur-xl border-b border-white/5;
+  }
+  
+  .glass-card {
+    @apply bg-card/60 backdrop-blur-md border border-white/5 shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/20 hover:bg-card/80;
+  }
+
+  .glass-button {
+    @apply relative overflow-hidden bg-primary/90 text-primary-foreground shadow-lg transition-all hover:bg-primary hover:shadow-primary/25 hover:scale-[1.02] active:scale-[0.98];
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+}
+
+
 /* ─── On-Load Animations ─── */
 @layer utilities {
   .animate-fade-in {

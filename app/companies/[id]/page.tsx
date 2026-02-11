@@ -7,13 +7,13 @@ import { ArrowLeft, MapPin, Briefcase, Users } from "lucide-react"
 
 async function getCompany(id: number): Promise<Employer | null> {
   const rows = await sql`
-    SELECT u.id, u.name AS username, u."companyName" AS company_name, u.email,
+    SELECT u.id, u.name AS username, u."companyName" AS company_name, u.email, u.image,
            COUNT(j.id) FILTER (WHERE j.is_active = true) AS open_jobs,
            COUNT(j.id) AS total_jobs
     FROM "user" u
     LEFT JOIN jobs_job j ON CAST(j.employer_id AS TEXT) = u.id
     WHERE u.id = ${String(id)} AND u.role IN ('employer', 'owner')
-    GROUP BY u.id, u.name, u."companyName", u.email
+    GROUP BY u.id, u.name, u."companyName", u.email, u.image
   `
   return (rows[0] as Employer) ?? null
 }
@@ -72,8 +72,16 @@ export default async function CompanyDetailPage({
       {/* Company hero */}
       <div className="animate-fade-up rounded-xl border border-border bg-card p-6">
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-2xl font-bold text-primary">
-            {initial}
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-2xl font-bold text-primary overflow-hidden">
+            {company.image ? (
+              <img
+                src={company.image}
+                alt={company.company_name || company.username}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              initial
+            )}
           </div>
           <div className="text-center sm:text-left">
             <h1 className="font-heading text-2xl font-bold text-foreground">

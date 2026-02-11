@@ -19,6 +19,7 @@ export type Job = {
   // joined fields
   company_name?: string
   employer_username?: string
+  employer_logo?: string
   category_name?: string
   category_slug?: string
   application_count?: number
@@ -37,6 +38,7 @@ export type Employer = {
   username: string
   company_name: string
   email: string
+  image?: string
   open_jobs?: number
   total_jobs?: number
 }

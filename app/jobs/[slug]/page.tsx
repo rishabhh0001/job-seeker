@@ -16,7 +16,7 @@ import { ApplyButton } from "@/components/apply-button"
 
 async function getJob(slug: string): Promise<Job | null> {
   const rows = await sql`
-    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username,
+    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username, u.image AS employer_logo,
            c.name AS category_name, c.slug AS category_slug
     FROM jobs_job j
     LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
@@ -72,8 +72,16 @@ export default async function JobDetailPage({
         <div className="animate-fade-up lg:col-span-2">
           <div className="rounded-xl border border-border bg-card p-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Building2 className="h-6 w-6" />
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary overflow-hidden">
+                {job.employer_logo ? (
+                  <img
+                    src={job.employer_logo}
+                    alt={job.company_name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <Building2 className="h-6 w-6" />
+                )}
               </div>
               <div>
                 <h1 className="font-heading text-2xl font-bold text-foreground">

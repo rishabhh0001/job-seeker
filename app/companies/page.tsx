@@ -5,13 +5,13 @@ import { Building2, MapPin, Briefcase } from "lucide-react"
 
 async function getEmployers(): Promise<Employer[]> {
   const rows = await sql`
-    SELECT u.id, u.name AS username, u."companyName" AS company_name, u.email,
+    SELECT u.id, u.name AS username, u."companyName" AS company_name, u.email, u.image,
            COUNT(j.id) FILTER (WHERE j.is_active = true) AS open_jobs,
            COUNT(j.id) AS total_jobs
     FROM "user" u
     LEFT JOIN jobs_job j ON CAST(j.employer_id AS TEXT) = u.id
     WHERE u.role IN ('employer', 'owner')
-    GROUP BY u.id, u.name, u."companyName", u.email
+    GROUP BY u.id, u.name, u."companyName", u.email, u.image
     ORDER BY u."companyName", u.name
   `
   return rows as Employer[]
@@ -50,8 +50,16 @@ export default async function CompaniesPage() {
                 className="animate-fade-up group flex flex-col items-center rounded-xl border border-border bg-card p-6 text-center transition-all duration-200 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
                 style={{ animationDelay: `${Math.min(i * 60, 300)}ms` }}
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-xl font-bold text-primary transition-transform duration-200 group-hover:scale-105">
-                  {initial}
+                <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-xl font-bold text-primary transition-transform duration-200 group-hover:scale-105 overflow-hidden">
+                  {emp.image ? (
+                    <img
+                      src={emp.image}
+                      alt={emp.company_name || emp.username}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    initial
+                  )}
                 </div>
                 <h3 className="mt-4 font-heading text-lg font-bold text-foreground">
                   {emp.company_name || emp.username}

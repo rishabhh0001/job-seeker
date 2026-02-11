@@ -138,6 +138,11 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Delete associated data
+        await sql`DELETE FROM jobs_application WHERE user_id = ANY(${ids})`
+        // Also delete applications for jobs posted by this user (if they are employer)
+        await sql`DELETE FROM jobs_application WHERE job_id IN (SELECT id FROM jobs_job WHERE employer_id = ANY(${ids}))`
+        await sql`DELETE FROM jobs_job WHERE employer_id = ANY(${ids})`
+
         await sql`DELETE FROM passkey WHERE "userId" = ANY(${ids})`
         await sql`DELETE FROM session WHERE "userId" = ANY(${ids})`
         await sql`DELETE FROM account WHERE "userId" = ANY(${ids})`

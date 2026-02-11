@@ -24,7 +24,7 @@ async function getJobs(
   category?: string
 ): Promise<Job[]> {
   let baseQuery = `
-    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username,
+    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username, u.image AS employer_logo,
            c.name AS category_name, c.slug AS category_slug
     FROM jobs_job j
     LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
