@@ -28,7 +28,10 @@ export async function GET(request: NextRequest) {
         if (roleFilter && VALID_ROLES.includes(roleFilter)) {
             users = await sql`
         SELECT id, name, email, role, "firstName", "lastName", "companyName",
-               "emailVerified", image, "createdAt", "updatedAt"
+               "emailVerified", image, "createdAt", "updatedAt",
+               phone, "dateOfBirth", address, city, state, country, "postalCode",
+               "highestQualification", "collegeName", major, "graduationYear", gpa,
+               "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills
         FROM "user"
         WHERE role = ${roleFilter}
         ORDER BY "createdAt" DESC
@@ -36,7 +39,10 @@ export async function GET(request: NextRequest) {
         } else {
             users = await sql`
         SELECT id, name, email, role, "firstName", "lastName", "companyName",
-               "emailVerified", image, "createdAt", "updatedAt"
+               "emailVerified", image, "createdAt", "updatedAt",
+               phone, "dateOfBirth", address, city, state, country, "postalCode",
+               "highestQualification", "collegeName", major, "graduationYear", gpa,
+               "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills
         FROM "user"
         ORDER BY "createdAt" DESC
       `

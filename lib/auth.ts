@@ -36,7 +36,7 @@ export const auth = betterAuth({
                 type: "string",
                 required: false,
                 defaultValue: "applicant",
-                input: true,
+                input: true, // Allow this field to be set during sign up
             },
             firstName: {
                 type: "string",
@@ -55,6 +55,77 @@ export const auth = betterAuth({
                 required: false,
                 defaultValue: "",
                 input: true,
+            },
+            // Extended Profile Fields
+            phone: {
+                type: "string",
+                required: false,
+            },
+            dateOfBirth: {
+                type: "string", // Storing as string or use date type
+                required: false,
+            },
+            address: {
+                type: "string",
+                required: false,
+            },
+            city: {
+                type: "string",
+                required: false,
+            },
+            state: {
+                type: "string",
+                required: false,
+            },
+            country: {
+                type: "string",
+                required: false,
+            },
+            postalCode: {
+                type: "string",
+                required: false,
+            },
+            // Education
+            highestQualification: {
+                type: "string",
+                required: false,
+            },
+            collegeName: {
+                type: "string",
+                required: false,
+            },
+            major: {
+                type: "string",
+                required: false,
+            },
+            graduationYear: {
+                type: "number",
+                required: false,
+            },
+            gpa: {
+                type: "number",
+                required: false,
+            },
+            // Professional
+            yearsOfExperience: {
+                type: "number",
+                required: false,
+            },
+            currentJobTitle: {
+                type: "string",
+                required: false,
+            },
+            linkedin: {
+                type: "string",
+                required: false,
+            },
+            portfolio: {
+                type: "string",
+                required: false,
+            },
+            skills: {
+                type: "string", // Stored as comma-separated or JSON string
+                required: false,
             },
         },
     },
