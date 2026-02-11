@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server"
 // PATCH - Update company/user
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth.api.getSession({
@@ -18,6 +18,7 @@ export async function PATCH(
             return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
         }
 
+        const params = await props.params
         const { id } = params
         const body = await request.json()
         const { companyName, username, email } = body
@@ -50,7 +51,7 @@ export async function PATCH(
 // DELETE - Delete company and all associated data
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth.api.getSession({
@@ -61,6 +62,7 @@ export async function DELETE(
             return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
         }
 
+        const params = await props.params
         const { id } = params
 
         if (!id) {

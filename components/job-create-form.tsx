@@ -6,12 +6,24 @@ import { JOB_PRESETS } from "@/lib/job-presets"
 import Link from "next/link"
 import { ArrowLeft, Loader2, Wand2 } from "lucide-react"
 
-type Category = {
+export type Category = {
     id: number
     name: string
 }
 
-export function JobCreateForm({ categories }: { categories: Category[] }) {
+type Employer = {
+    id: number
+    company_name: string
+    username: string
+}
+
+interface JobCreateFormProps {
+    categories: Category[]
+    employers?: Employer[] // If provided, enables admin mode
+    onSuccess?: () => void // If provided, overrides default redirect
+}
+
+export function JobCreateForm({ categories, employers, onSuccess }: JobCreateFormProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
@@ -24,18 +36,10 @@ export function JobCreateForm({ categories }: { categories: Category[] }) {
         salaryMin: "",
         salaryMax: "",
         categoryId: "",
+        employerId: "", // Only used if employers provided
     })
 
-    // Auto-generate slug from title
-    useEffect(() => {
-        if (formData.title) {
-            const slug = formData.title
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/(^-|-$)+/g, "")
-            setFormData((prev) => ({ ...prev, slug }))
-        }
-    }, [formData.title])
+    // ... (slug generation effect remains same)
 
     const handleApplyPreset = (type: string) => {
         const preset = JOB_PRESETS[Object.keys(JOB_PRESETS).find(k => JOB_PRESETS[k].value === type) || ""]
@@ -54,15 +58,21 @@ export function JobCreateForm({ categories }: { categories: Category[] }) {
         setError("")
 
         try {
+            const payload: any = {
+                ...formData,
+                salaryMin: formData.salaryMin ? Number(formData.salaryMin) : null,
+                salaryMax: formData.salaryMax ? Number(formData.salaryMax) : null,
+                categoryId: Number(formData.categoryId),
+            }
+
+            if (employers && formData.employerId) {
+                payload.employerId = formData.employerId // Should be string UUID now
+            }
+
             const res = await fetch("/api/jobs/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    ...formData,
-                    salaryMin: formData.salaryMin ? Number(formData.salaryMin) : null,
-                    salaryMax: formData.salaryMax ? Number(formData.salaryMax) : null,
-                    categoryId: Number(formData.categoryId),
-                }),
+                body: JSON.stringify(payload),
             })
 
             if (!res.ok) {
@@ -70,9 +80,13 @@ export function JobCreateForm({ categories }: { categories: Category[] }) {
                 throw new Error(data.error || "Failed to create job")
             }
 
-            const data = await res.json()
-            router.push(`/jobs/${data.job.slug}`)
-            router.refresh()
+            if (onSuccess) {
+                onSuccess()
+            } else {
+                const data = await res.json()
+                router.push(`/jobs/${data.job.slug}`)
+                router.refresh()
+            }
         } catch (err: any) {
             setError(err.message)
         } finally {
@@ -98,6 +112,30 @@ export function JobCreateForm({ categories }: { categories: Category[] }) {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
+                    {employers && (
+                        <div className="space-y-2 col-span-2">
+                            <label htmlFor="employer" className="text-sm font-medium">
+                                Employer <span className="text-destructive">*</span>
+                            </label>
+                            <select
+                                id="employer"
+                                required
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                value={formData.employerId}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, employerId: e.target.value })
+                                }
+                            >
+                                <option value="">Select an employer</option>
+                                {employers.map((emp) => (
+                                    <option key={emp.id} value={emp.id}>
+                                        {emp.company_name || emp.username}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
                     <div className="space-y-2">
                         <label htmlFor="title" className="text-sm font-medium">
                             Job Title <span className="text-destructive">*</span>

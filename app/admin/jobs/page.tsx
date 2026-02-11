@@ -1,12 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Plus, Filter, Trash2 } from "lucide-react"
+import { Plus, Filter, Trash2, X } from "lucide-react"
 import { DataTable, Column } from "@/components/admin/data-table"
 import { SearchBar } from "@/components/admin/search-bar"
 import { BulkActionBar } from "@/components/admin/bulk-action-bar"
 import { FormModal } from "@/components/admin/form-modal"
 import { DeleteConfirmation } from "@/components/admin/delete-confirmation"
+import { JobCreateForm, Category } from "@/components/job-create-form"
 
 type Job = {
     id: number
@@ -25,11 +26,6 @@ type Job = {
     category_name: string
     category_id: number
     application_count: number
-}
-
-type Category = {
-    id: number
-    name: string
 }
 
 type Employer = {
@@ -131,7 +127,7 @@ export default function JobsAdminPage() {
             salaryMin: parseInt(data.salaryMin) || 0,
             salaryMax: parseInt(data.salaryMax) || 0,
             categoryId: parseInt(data.categoryId),
-            employerId: parseInt(data.employerId),
+            employerId: data.employerId ? data.employerId : undefined, // Ensure string UUID
             isActive: data.isActive === "true",
         }
 
@@ -380,13 +376,15 @@ export default function JobsAdminPage() {
                 </select>
             </div>
 
-            <DataTable
-                data={filteredJobs}
-                columns={columns}
-                onRowClick={handleEdit}
-                selectedIds={selectedIds}
-                onSelectionChange={setSelectedIds}
-            />
+            <div className="rounded-xl border border-border bg-card shadow-sm">
+                <DataTable
+                    data={filteredJobs}
+                    columns={columns}
+                    onRowClick={handleEdit}
+                    selectedIds={selectedIds}
+                    onSelectionChange={setSelectedIds}
+                />
+            </div>
 
             <BulkActionBar
                 selectedCount={selectedIds.size}
@@ -409,64 +407,97 @@ export default function JobsAdminPage() {
                 ]}
             />
 
-            <FormModal
-                isOpen={isFormOpen}
-                onClose={() => setIsFormOpen(false)}
-                title={editingJob ? "Edit Job" : "Create Job"}
-                onSubmit={handleSubmit}
-                initialData={editingJob || undefined}
-                fields={[
-                    { name: "title", label: "Title", type: "text", required: true },
-                    { name: "slug", label: "Slug", type: "text", required: true },
-                    { name: "description", label: "Description", type: "textarea", required: true },
-                    {
-                        name: "jobType",
-                        label: "Job Type",
-                        type: "select",
-                        required: true,
-                        options: [
-                            { value: "Full-time", label: "Full-time" },
-                            { value: "Part-time", label: "Part-time" },
-                            { value: "Contract", label: "Contract" },
-                            { value: "Internship", label: "Internship" },
-                        ],
-                    },
-                    { name: "location", label: "Location", type: "text" },
-                    { name: "salaryMin", label: "Minimum Salary", type: "number" },
-                    { name: "salaryMax", label: "Maximum Salary", type: "number" },
-                    {
-                        name: "categoryId",
-                        label: "Category",
-                        type: "select",
-                        required: true,
-                        options: categories.map((cat) => ({
-                            value: cat.id.toString(),
-                            label: cat.name,
-                        })),
-                    },
-                    {
-                        name: "employerId",
-                        label: "Employer",
-                        type: "select",
-                        required: true,
-                        options: employers.map((emp) => ({
-                            value: emp.id.toString(),
-                            label: emp.company_name || emp.username,
-                        })),
-                    },
-                    {
-                        name: "isActive",
-                        label: "Status",
-                        type: "select",
-                        required: true,
-                        options: [
-                            { value: "true", label: "Active" },
-                            { value: "false", label: "Inactive" },
-                        ],
-                        defaultValue: "true",
-                    },
-                ]}
-            />
+            {isFormOpen && (
+                editingJob ? (
+                    <FormModal
+                        isOpen={true}
+                        onClose={() => setIsFormOpen(false)}
+                        title="Edit Job"
+                        onSubmit={handleSubmit}
+                        initialData={{
+                            ...editingJob,
+                            salaryMin: editingJob.salary_min,
+                            salaryMax: editingJob.salary_max,
+                            categoryId: editingJob.category_id,
+                            employerId: editingJob.employer_id,
+                            isActive: editingJob.is_active ? "true" : "false",
+                        }}
+                        fields={[
+                            { name: "title", label: "Title", type: "text", required: true },
+                            { name: "slug", label: "Slug", type: "text", required: true },
+                            { name: "description", label: "Description", type: "textarea", required: true },
+                            {
+                                name: "jobType",
+                                label: "Job Type",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { value: "Full-time", label: "Full-time" },
+                                    { value: "Part-time", label: "Part-time" },
+                                    { value: "Contract", label: "Contract" },
+                                    { value: "Internship", label: "Internship" },
+                                ],
+                            },
+                            { name: "location", label: "Location", type: "text" },
+                            { name: "salaryMin", label: "Minimum Salary", type: "number" },
+                            { name: "salaryMax", label: "Maximum Salary", type: "number" },
+                            {
+                                name: "categoryId",
+                                label: "Category",
+                                type: "select",
+                                required: true,
+                                options: categories.map((cat) => ({
+                                    value: cat.id.toString(),
+                                    label: cat.name,
+                                })),
+                            },
+                            {
+                                name: "employerId",
+                                label: "Employer",
+                                type: "select",
+                                required: true,
+                                options: employers.map((emp) => ({
+                                    value: emp.id.toString(),
+                                    label: emp.company_name || emp.username,
+                                })),
+                            },
+                            {
+                                name: "isActive",
+                                label: "Status",
+                                type: "select",
+                                required: true,
+                                options: [
+                                    { value: "true", label: "Active" },
+                                    { value: "false", label: "Inactive" },
+                                ],
+                                defaultValue: "true",
+                            },
+                        ]}
+                    />
+                ) : (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                        <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-lg">
+                            <div className="mb-4 flex items-center justify-between">
+                                <h2 className="font-heading text-xl font-bold text-foreground">Create Job</h2>
+                                <button
+                                    onClick={() => setIsFormOpen(false)}
+                                    className="rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                                >
+                                    <X className="h-5 w-5" />
+                                </button>
+                            </div>
+                            <JobCreateForm
+                                categories={categories}
+                                employers={employers}
+                                onSuccess={() => {
+                                    setIsFormOpen(false)
+                                    fetchData()
+                                }}
+                            />
+                        </div>
+                    </div>
+                )
+            )}
 
             <DeleteConfirmation
                 isOpen={isDeleteOpen}

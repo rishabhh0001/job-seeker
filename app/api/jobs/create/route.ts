@@ -1,7 +1,7 @@
 import { sql } from "@/lib/db"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
-import { isEmployerOrAbove } from "@/lib/role-utils"
+import { isEmployerOrAbove, isAdminOrAbove } from "@/lib/role-utils"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
             salaryMin,
             salaryMax,
             categoryId,
+            employerId, // Optional admin override
         } = body
 
         if (!title || !slug || !description || !categoryId) {
@@ -45,6 +46,12 @@ export async function POST(request: NextRequest) {
             counter++
         }
 
+        // Admin override for employer ID
+        let targetEmployerId = session.user.id
+        if (employerId && isAdminOrAbove((session.user as any).role)) {
+            targetEmployerId = employerId
+        }
+
         const result = await sql`
       INSERT INTO jobs_job (
         title, slug, description, job_type, location,
@@ -53,7 +60,7 @@ export async function POST(request: NextRequest) {
       ) VALUES (
         ${title}, ${finalSlug}, ${description}, ${jobType || "FT"},
         ${location || ""}, ${salaryMin || 0}, ${salaryMax || 0},
-        ${categoryId}, ${session.user.id}, true, NOW(), NOW()
+        ${categoryId}, ${targetEmployerId}, true, NOW(), NOW()
       )
       RETURNING *
     `
