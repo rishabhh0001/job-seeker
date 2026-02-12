@@ -90,7 +90,7 @@ export default function JobsAdminPage() {
             const [jobsRes, categoriesRes, employersRes] = await Promise.all([
                 fetch("/api/admin/jobs"),
                 fetch("/api/admin/categories"),
-                fetch("/api/admin/users?type=employer"),
+                fetch("/api/admin/users?role=employer"),
             ])
 
             const [jobsData, categoriesData, employersData] = await Promise.all([

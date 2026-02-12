@@ -19,6 +19,7 @@ import {
     GraduationCap,
     Briefcase,
     Link as LinkIcon,
+    Globe,
 } from "lucide-react"
 import { useSession } from "@/lib/auth-client"
 
@@ -51,7 +52,8 @@ interface UserProfile extends User {
     currentJobTitle: string
     linkedin: string
     portfolio: string
-    skills: string
+    description: string
+    website: string
 }
 
 const ROLES = ["owner", "superadmin", "admin", "employer", "applicant"]
@@ -188,6 +190,8 @@ export default function AdminUsersPage() {
                 firstName: u.firstName || "",
                 lastName: u.lastName || "",
                 companyName: u.companyName || "",
+                description: u.description || "",
+                website: u.website || "",
                 phone: u.phone || "",
                 dateOfBirth: u.dateOfBirth || "",
                 address: u.address || "",
@@ -553,6 +557,29 @@ export default function AdminUsersPage() {
                                             onChange={(e) => updateProfileField("companyName", e.target.value)}
                                             className={inputClass}
                                             placeholder="Company name"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-muted-foreground">Website</label>
+                                        <div className="relative">
+                                            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <input
+                                                type="url"
+                                                value={profileForm.website || ""}
+                                                onChange={(e) => updateProfileField("website", e.target.value)}
+                                                className={`${inputClass} pl-10`}
+                                                placeholder="https://company.com"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-1.5 sm:col-span-2">
+                                        <label className="text-xs font-medium text-muted-foreground">Description</label>
+                                        <textarea
+                                            value={profileForm.description || ""}
+                                            onChange={(e) => updateProfileField("description", e.target.value)}
+                                            rows={3}
+                                            className={`${inputClass} resize-none`}
+                                            placeholder="Company description or user bio..."
                                         />
                                     </div>
                                 </div>

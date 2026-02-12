@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json()
-        const { companyName, username } = body
+
+        const { companyName, username, description, website, address, city, country, logo } = body
 
         if (!companyName || !username) {
             return NextResponse.json(
@@ -43,10 +44,11 @@ export async function POST(request: NextRequest) {
         const result = await sql`
             INSERT INTO "user" (
                 id, name, email, "emailVerified", "createdAt", "updatedAt",
-                role, "companyName"
+                role, "companyName", description, website, address, city, country, image
             ) VALUES (
                 gen_random_uuid(), ${username}, ${email}, false, NOW(), NOW(),
-                'employer', ${companyName}
+                'employer', ${companyName}, ${description || null}, ${website || null}, 
+                ${address || null}, ${city || null}, ${country || null}, ${logo || null}
             )
             RETURNING *
         `

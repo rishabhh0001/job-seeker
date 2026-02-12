@@ -36,9 +36,14 @@ export function AdminSidebar() {
             icon: Users,
         },
         {
+            href: "/admin/companies",
+            label: "Companies",
+            icon: Building2,
+        },
+        {
             href: "/admin/users",
             label: "Users",
-            icon: Building2,
+            icon: Users,
         },
         {
             href: "/admin/categories",

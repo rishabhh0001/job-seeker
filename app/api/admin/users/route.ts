@@ -31,7 +31,8 @@ export async function GET(request: NextRequest) {
                "emailVerified", image, "createdAt", "updatedAt",
                phone, "dateOfBirth", address, city, state, country, "postalCode",
                "highestQualification", "collegeName", major, "graduationYear", gpa,
-               "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills
+               "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills,
+               description, website
         FROM "user"
         WHERE role = ${roleFilter}
         ORDER BY "createdAt" DESC
@@ -42,7 +43,8 @@ export async function GET(request: NextRequest) {
                "emailVerified", image, "createdAt", "updatedAt",
                phone, "dateOfBirth", address, city, state, country, "postalCode",
                "highestQualification", "collegeName", major, "graduationYear", gpa,
-               "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills
+               "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills,
+               description, website
         FROM "user"
         ORDER BY "createdAt" DESC
       `

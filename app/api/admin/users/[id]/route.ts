@@ -31,7 +31,8 @@ export async function GET(
                    "emailVerified", image, "createdAt", "updatedAt",
                    phone, "dateOfBirth", address, city, state, country, "postalCode",
                    "highestQualification", "collegeName", major, "graduationYear", gpa,
-                   "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills
+                   "yearsOfExperience", "currentJobTitle", linkedin, portfolio, skills,
+                   description, website
             FROM "user"
             WHERE id = ${id}
         `
@@ -77,7 +78,8 @@ export async function PUT(
             name, firstName, lastName, companyName,
             phone, dateOfBirth, address, city, state, country, postalCode,
             highestQualification, collegeName, major, graduationYear, gpa,
-            yearsOfExperience, currentJobTitle, linkedin, portfolio, skills
+            yearsOfExperience, currentJobTitle, linkedin, portfolio, skills,
+            description, website
         } = body
 
         const result = await sql`
@@ -104,6 +106,8 @@ export async function PUT(
                 linkedin = COALESCE(${linkedin || null}, linkedin),
                 portfolio = COALESCE(${portfolio || null}, portfolio),
                 skills = COALESCE(${skills || null}, skills),
+                description = COALESCE(${description || null}, description),
+                website = COALESCE(${website || null}, website),
                 "updatedAt" = NOW()
             WHERE id = ${id}
             RETURNING *
