@@ -3,7 +3,7 @@ import Link from "next/link"
 import { sql } from "@/lib/db"
 import type { Employer, Job } from "@/lib/db"
 import { JobCard } from "@/components/job-card"
-import { ArrowLeft, MapPin, Briefcase, Users } from "lucide-react"
+import { ArrowLeft, MapPin, Briefcase, Users, Globe } from "lucide-react"
 
 
 async function getCompany(id: number): Promise<Employer | null> {

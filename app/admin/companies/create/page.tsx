@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 
 import { CompanyCreateForm } from "@/components/company-create-form"
 import { Metadata } from "next"

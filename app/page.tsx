@@ -6,59 +6,69 @@ import { CategoryCards } from "@/components/category-cards"
 import { JobCard } from "@/components/job-card"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 
-async function getCategories(): Promise<Category[]> {
-  const rows = await sql`
-    SELECT c.id, c.name, c.slug, c.description,
-           COUNT(j.id) FILTER (WHERE j.is_active = true) AS job_count
-    FROM jobs_category c
-    LEFT JOIN jobs_job j ON j.category_id = c.id
-    GROUP BY c.id, c.name, c.slug, c.description
-    ORDER BY c.name
-  `
-  return rows as Category[]
-}
+import { unstable_cache } from "next/cache"
 
-async function getJobs(
-  query?: string,
-  location?: string,
-  category?: string
-): Promise<Job[]> {
-  let baseQuery = `
-    SELECT j.*, u."companyName" AS company_name, u.name AS employer_username, u.image AS employer_logo,
-           c.name AS category_name, c.slug AS category_slug
-    FROM jobs_job j
-    LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
-    LEFT JOIN jobs_category c ON c.id = j.category_id
-    WHERE j.is_active = true
-  `
-  const conditions: string[] = []
-  const params: string[] = []
+const getCategories = unstable_cache(
+  async (): Promise<Category[]> => {
+    const rows = await sql`
+      SELECT c.id, c.name, c.slug, c.description,
+             COUNT(j.id) FILTER (WHERE j.is_active = true) AS job_count
+      FROM jobs_category c
+      LEFT JOIN jobs_job j ON j.category_id = c.id
+      GROUP BY c.id, c.name, c.slug, c.description
+      ORDER BY c.name
+    `
+    return rows as Category[]
+  },
+  ["categories-list"],
+  { revalidate: 3600, tags: ["categories"] }
+)
 
-  if (query) {
-    params.push(`%${query}%`)
-    const i = params.length
-    conditions.push(
-      `(j.title ILIKE $${i} OR j.description ILIKE $${i} OR u."companyName" ILIKE $${i})`
-    )
-  }
-  if (location) {
-    params.push(`%${location}%`)
-    conditions.push(`j.location ILIKE $${params.length}`)
-  }
-  if (category) {
-    params.push(category)
-    conditions.push(`c.slug = $${params.length}`)
-  }
+const getJobs = unstable_cache(
+  async (
+    query?: string,
+    location?: string,
+    category?: string
+  ): Promise<Job[]> => {
+    let baseQuery = `
+      SELECT j.*, u."companyName" AS company_name, u.name AS employer_username, u.image AS employer_logo,
+             c.name AS category_name, c.slug AS category_slug
+      FROM jobs_job j
+      LEFT JOIN "user" u ON u.id = CAST(j.employer_id AS TEXT)
+      LEFT JOIN jobs_category c ON c.id = j.category_id
+      WHERE j.is_active = true
+    `
+    const conditions: string[] = []
+    const params: string[] = []
 
-  if (conditions.length) {
-    baseQuery += ` AND ${conditions.join(" AND ")}`
-  }
+    if (query) {
+      params.push(`%${query}%`)
+      const i = params.length
+      conditions.push(
+        `(j.title ILIKE $${i} OR j.description ILIKE $${i} OR u."companyName" ILIKE $${i})`
+      )
+    }
+    if (location) {
+      params.push(`%${location}%`)
+      conditions.push(`j.location ILIKE $${params.length}`)
+    }
+    if (category) {
+      params.push(category)
+      conditions.push(`c.slug = $${params.length}`)
+    }
 
-  baseQuery += " ORDER BY j.created_at DESC LIMIT 20"
+    if (conditions.length) {
+      baseQuery += ` AND ${conditions.join(" AND ")}`
+    }
 
-  const rows = await sql(baseQuery, params)
-  return rows as Job[]
-}
+    baseQuery += " ORDER BY j.created_at DESC LIMIT 20"
+
+    const rows = await sql(baseQuery, params)
+    return rows as Job[]
+  },
+  ["jobs-list"],
+  { revalidate: 60, tags: ["jobs"] }
+)
 
 export default async function HomePage({
   searchParams,

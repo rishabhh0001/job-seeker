@@ -99,15 +99,6 @@ export default async function DashboardPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          {session?.user && isAdminOrAbove((session.user as any).role) && (
-            <Link
-              href="/dashboard/companies/create"
-              className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-all hover:bg-muted"
-            >
-              <Building2 className="h-4 w-4" />
-              Create Company
-            </Link>
-          )}
           <Link
             href="/companies"
             className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-semibold text-foreground transition-all hover:bg-muted"

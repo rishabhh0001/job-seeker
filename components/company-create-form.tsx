@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
 
 export function CompanyCreateForm() {
     const router = useRouter()
+    const pathname = usePathname()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ export function CompanyCreateForm() {
             }
 
             // Check if we are in admin mode (url contains /admin)
-            if (window.location.pathname.includes("/admin")) {
+            if (pathname.includes("/admin")) {
                 router.push("/admin/companies")
             } else {
                 router.push("/companies")
@@ -208,7 +209,7 @@ export function CompanyCreateForm() {
 
             <div className="flex justify-end gap-4">
                 <Link
-                    href={window.location.pathname.includes("/admin") ? "/admin/companies" : "/dashboard"}
+                    href={pathname.includes("/admin") ? "/admin/companies" : "/dashboard"}
                     className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                 >
                     Cancel

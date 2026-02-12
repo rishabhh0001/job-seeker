@@ -39,6 +39,11 @@ export type Employer = {
   company_name: string
   email: string
   image?: string
+  description?: string
+  website?: string
+  address?: string
+  city?: string
+  country?: string
   open_jobs?: number
   total_jobs?: number
 }

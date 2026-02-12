@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Building2, MapPin } from "lucide-react"
 import type { Job } from "@/lib/db"
 import { JOB_TYPE_LABELS, formatSalary, timeAgo } from "@/lib/db"
@@ -14,9 +15,11 @@ export function JobCard({ job, index = 0 }: { job: Job; index?: number }) {
       {/* Icon */}
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary overflow-hidden">
         {job.employer_logo ? (
-          <img
-            src={job.employer_logo}
-            alt={job.company_name}
+          <Image
+            src={job.employer_logo || ""}
+            alt={job.company_name || "Company Logo"}
+            width={44}
+            height={44}
             className="h-full w-full object-cover"
           />
         ) : (

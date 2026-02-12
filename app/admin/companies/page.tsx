@@ -1,4 +1,6 @@
 
+export const dynamic = 'force-dynamic'
+
 import { sql } from "@/lib/db"
 import { Metadata } from "next"
 import Link from "next/link"
