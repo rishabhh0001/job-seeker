@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Source_Sans_3, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { LayoutShell } from "@/components/layout-shell"
+import { Analytics } from "@vercel/analytics/next"
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
         className={`${sourceSans.variable} ${spaceGrotesk.variable} font-sans antialiased`}
       >
         <LayoutShell>{children}</LayoutShell>
+        <Analytics />
       </body>
     </html>
   )
